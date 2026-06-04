@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社區健康守護尖兵：25題核心衛教挑戰 🌟💖</title>
+    <style>
+        /* --- 🎨 核心視覺：深邃質感黑、專業華麗金與高對比白 --- */
+        :root {
+            --bg-color: #181818;       
+            --gold-color: #D4AF37;     
+            --white-color: #FFFFFF;    
+            --accent-green: #2ECC71;   
+            --accent-pink: #FF6B81;    
+            --accent-blue: #3498DB;    
+            --card-bg: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--white-color);
+            font-family: 'Microsoft JhengHei', -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 3px solid var(--gold-color);
+            border-radius: 24px;
+            padding: 30px 20px;
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.15);
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: var(--gold-color);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #BBBBBB;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 1px dashed var(--gold-color);
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+            font-weight: bold;
+        }
+
+        .gem-score {
+            color: #FFDF00;
+        }
+
+        .question-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--gold-color);
+            text-align: left;
+        }
+
+        .question-tag {
+            font-size: 0.85rem;
+            background: var(--gold-color);
+            color: var(--bg-color);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            font-weight: bold;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: rgba(255,255,255,0.07);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: var(--white-color);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(255,255,255,0.15);
+            border-color: var(--gold-color);
+            transform: translateY(-2px);
+        }
+
+        .option-badge {
+            background: rgba(255,255,255,0.2);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            color: var(--white-color);
+        }
+
+        .correct-choice {
+            background: linear-gradient(135deg, #1d976c, #93f9b9) !important;
+            border-color: #2ecc71 !important;
+            color: #000000 !important;
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        .wrong-choice {
+            background: linear-gradient(135deg, #eb3349, #f45c43) !important;
+            border-color: #ff6b81 !important;
+            color: #ffffff !important;
+        }
+
+        .correct-choice .option-badge {
+            background: rgba(0,0,0,0.2);
+            color: #000;
+        }
+
+        .feedback-area {
+            min-height: 75px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--gold-color);
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            line-height: 1.5;
+            background: rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .feedback-hint {
+            font-size: 0.9rem;
+            color: #DDDDDD;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        .next-container {
+            display: flex;
+            justify center;
+        }
+
+        .btn-next {
+            background: var(--gold-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 50px;
+            padding: 14px 45px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(214, 175, 55, 0.4);
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .btn-next:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(214, 175, 55, 0.6);
+        }
+
+        .complete-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .complete-title {
+            font-size: 2rem;
+            color: var(--gold-color);
+            margin-bottom: 15px;
+            animation: float 2s infinite alternate;
+        }
+
+        .complete-report {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.06);
+            padding: 25px;
+            border-radius: 18px;
+            border: 2px dashed var(--gold-color);
+            text-align: left;
+            width: 100%;
+        }
+
+        .btn-restart {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            z-index: 999;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="quizBox">
+        <h1 id="mainTitle">社區健康守護尖兵 🛡️</h1>
+        <p class="subtitle">國小健康與體育・單元四核心知識評量</p>
+
+        <div class="status-bar">
+            <div id="progressText">題目進度: 1 / 25 📝</div>
+            <div id="scoreText">目前得分: <span class="gem-score">⭐ 0</span></div>
+        </div>
+
+        <div class="question-box">
+            <div class="question-tag" id="qTag">載入中</div>
+            <div class="question-text" id="qText">題目載入中...</div>
+        </div>
+
+        <div class="options-grid" id="optionsContainer"></div>
+
+        <div class="feedback-area" id="feedbackArea">
+            <div id="feedbackText">🌟 請詳讀題幹並選出最適當的答案。</div>
+            <div id="feedbackHint" class="feedback-hint"></div>
+        </div>
+
+        <div class="next-container">
+            <button class="btn-next" id="btnNext" onclick="nextQuestion()">➡️ 下一題</button>
+        </div>
+    </div>
+
+    <div class="game-container complete-screen" id="completeBox">
+        <h2 class="complete-title">🎆 評量完成 🎆</h2>
+        <div class="complete-report" id="reportDetails"></div>
+        <button class="btn-restart" onclick="restartGame()">🔄 重新挑戰</button>
+    </div>
+
+    <script>
+        // 🔮 25 題核心知識庫（第 16 題答案已精確修正為 1，即選項 B）
+        const quizData = [
+            {
+                tag: "🗑️ 垃圾分類：廚餘判定",
+                question: "放學後我們常和家人幫忙整理社區。關於垃圾分類，下列哪一項物品屬於課本定義的「廚餘」？",
+                options: ["落葉與枯樹枝", "吃剩的飯菜餐點", "裝便當的紙製外包裝餐盒", "廢棄的塑膠免洗筷與湯匙"],
+                correct: 1,
+                hint: "課本第 59 頁：吃剩的飯菜等物品在分類上屬於「廚餘」處理。"
+            },
+            {
+                tag: "♻️ 資源回收：金屬分類",
+                question: "整理社區環境時撿到許多廢棄容器。下列哪一項物品屬於可以回收再利用的「資源回收物」？",
+                options: ["沾了餐飲油污的廚房衛生紙", "包裝一般垃圾用的乾淨塑膠袋", "廢棄的鐵罐與鋁罐", "破損無法修補的陶瓷馬克杯"],
+                correct: 2,
+                hint: "課本第 59 頁：塑膠杯、玻璃瓶、鐵鋁罐、紙製品與乾電池均屬於資源回收。"
+            },
+            {
+                tag: "🔋 資源回收：有害物質",
+                question: "日常生活中使用完的「乾電池」，因為含有特定重金屬化學物質，在分類上應該如何正確處理？",
+                options: ["歸類為資源回收物集中處理", "直接當作一般垃圾丟入垃圾車", "投入廚餘桶當作有機肥集中發酵", "在社區空地就地掩埋以利自然降解"],
+                correct: 0,
+                hint: "課本第 59 頁特別將「乾電池」標示在資源回收的範疇中，必須回收以免環境污染。"
+            },
+            {
+                tag: "🧼 環境衛生效益",
+                question: "課本指出，社區做好垃圾分類與定時清理環境，最主要的公共衛生效益是什麼？",
+                options: ["有效活化社區垃圾焚化爐的運轉效能", "節省社區每個月的清潔管理費開銷", "美化社區大樓的外觀以提升居住品質", "避免堆積垃圾引來蟲鼠並造成髒亂與疾病"],
+                correct: 3,
+                hint: "課本第 59 頁：做好垃圾分類與清理，可以避免引來蟲鼠、造成髒亂與疾病。"
+            },
+            {
+                tag: "🐀 病媒與傳染病",
+                question: "若社區環境髒亂導致老鼠大量孳生，老鼠最容易在社區中傳播哪一種嚴重的鼠媒傳染病？",
+                options: ["漢他病毒出血熱", "登革熱病媒傳染", "流行性感冒病毒", "水痘與帶狀皰疹"],
+                correct: 0,
+                hint: "課本第 60 頁：環境髒亂引來的「老鼠」，會傳播漢他病毒出血熱等疾病。"
+            },
+            {
+                tag: "🦟 登革熱公共衛生別名",
+                question: "公共衛生領域常提到的「登革熱」，在台灣民間傳統的醫學俗稱中又被稱為什麼？",
+                options: ["黑死病", "天狗熱", "瘧疾", "日本腦炎"],
+                correct: 1,
+                hint: "課本第 63 頁明確註記：登革熱又俗稱「天狗熱」。"
+            },
+            {
+                tag: "🎯 登革熱傳染途徑",
+                question: "關於登革熱病毒在人類之間的傳播管道，下列哪一項敘述是完全正確的？",
+                options: ["與患者共用餐具經由唾液接觸傳染", "吸入患者咳嗽時產生的飛沫而引發感染", "經由特定病媒蚊叮咬患者後再叮咬健康人而傳染", "接觸到髒亂的垃圾或污水而經由皮膚黏膜直接感染"],
+                correct: 2,
+                hint: "課本第 63 頁：登革熱是透過病媒蚊叮咬患者，病毒在體內繁殖後再傳播給健康的人。"
+            },
+            {
+                tag: "🔍 病媒蚊種類觀念",
+                question: "是不是生活周遭所見到的「所有種類蚊子」，只要叮咬人類就會傳播登革熱？",
+                options: ["是的，只要是蚊子吸血就會傳播病毒", "不是，只有特定的病媒蚊才具有傳播登革熱病毒的能力", "只有體型大於一般家蚊的蚊子才會傳染", "只有生活在地下道水溝的普通黑頭蚊才會傳染"],
+                correct: 1,
+                hint: "課本第 63 頁：並不是所有的蚊子都帶有登革熱病毒，只有病媒蚊才會傳染。"
+            },
+            {
+                tag: "🔬 台灣核心病媒蚊",
+                question: "在台灣地區，主要負責傳播登革熱病毒的「兩大關鍵病媒蚊」是哪兩種？",
+                options: ["熱帶家蚊、地下家蚊", "三斑家蚊、環帶家蚊", "埃及斑蚊、白線斑蚊", "中華瘧蚊、小黑蚊"],
+                correct: 2,
+                hint: "課本第 64 頁有大幅圖片介紹台灣的兩大主要病媒蚊：埃及斑蚊與白線斑蚊。"
+            },
+            {
+                tag: "🦟 斑蚊外觀辨識",
+                question: "要如何透過外觀特徵，分辨出社區中的蚊子是否為埃及斑蚊或白線斑蚊等病媒蚊？",
+                options: ["觀察其翅膀是否呈現半透明的草綠色", "觀察其身體和腳上是否有黑白相間的斑紋", "觀察其頭部複眼是否呈現明顯的亮紅色", "觀察其腹部兩側是否完全呈現純白色"],
+                correct: 1,
+                hint: "課本第 64 頁：埃及斑蚊與白線斑蚊的共同外觀特徵是身體和腳上有黑白相間的斑紋。"
+            },
+            {
+                tag: "🤒 登革熱症狀：體溫反應",
+                question: "當人體不小心感染登革熱病毒後，最先出現的典型全身性生理症狀通常是什麼？",
+                options: ["突發性的高燒反應", "體溫持續異常偏低的低體溫症", "慢性反覆咳嗽與多痰症狀", "皮膚表面大面積的乾燥脫皮"],
+                correct: 0,
+                hint: "課本第 65 頁列出的登革熱核心症狀，第一個即為「高燒」。"
+            },
+            {
+                tag: "👁️ 登革熱症狀：頭部特徵",
+                question: "感染登革熱時，患者在眼睛周圍往往會感受到哪一種極具指標性的特殊疼痛？",
+                options: ["視網膜急性出血痛", "後眼窩深度疼痛", "眉毛周圍皮膚刺痛", "眼角膜紅腫癢痛"],
+                correct: 1,
+                hint: "課本第 65 頁特別圖示指明，登革熱的典型頭部症狀之一是「後眼窩痛」。"
+            },
+            {
+                tag: "💪 登革熱症狀：運動系統",
+                question: "登革熱又常讓患者感到骨頭劇烈不適，這是因為它會引發哪兩種部位的嚴重疼痛？",
+                options: ["指甲甲床痛、腳跟骨痛", "肌肉痛、關節痛", "皮膚表面痛、毛囊深處痛", "脊椎骨髓液抽痛"],
+                correct: 1,
+                hint: "課本第 65 頁指出，全身性的運動與骨骼系統反應包含「肌肉痛」與「關節痛」。"
+            },
+            {
+                tag: "🩺 登革熱症狀：消化與皮膚反應",
+                question: "下列哪一組消化與皮膚系統的反應，同樣屬於課本第 65 頁所列出的登革熱常見症狀？",
+                options: ["腹瀉不止與慢性呼吸困難", "噁心、食慾不振、皮膚出疹", "頻尿尿急與反覆流鼻血", "嚴重失眠與夜間盜汗"],
+                correct: 1,
+                hint: "課本第 65 頁列出的完整臨床症狀包含：高燒、頭痛、噁心、食慾不振、後眼窩痛、肌肉痛、關節痛、出疹。"
+            },
+            {
+                tag: "🏥 疑似感染之醫療處置",
+                question: "如果在登革熱流行季節發現自己或家人出現疑似症狀，最正確且安全的醫療處理方式是什麼？",
+                options: ["自行到藥局購買市售成藥服用並待在家中觀察", "進行劇烈運動大量發汗以加速病毒排出", "盡快就醫，針對出現的症狀做治療，並且多休息", "自行在房間完全隔離，等待一至兩週讓症狀自然痊癒"],
+                correct: 2,
+                hint: "課本第 65 頁貼心宣導：感染登革熱要盡快就醫，針對出現的症狀做治療，並且多休息。"
+            },
+            {
+                tag: "🏡 物理防治：室內防蚊",
+                question: "為了阻絕病媒蚊進入室內叮咬家人，里長建議居家環境的常規硬體設施應該如何妥善加強？",
+                options: ["全天候緊閉室內所有氣窗與通風口", "在室內門窗加裝防護紗窗與紗門", "調高室內冷氣運轉溫度以降低蚊蟲活性", "將陽台外牆塗成防蚊的深黑色調"],
+                correct: 1, // ✨ 核心修正：正確指向 B 選項
+                hint: "課本第 66 頁提到物理防治：室內核心做法是加裝紗窗紗門。"
+            },
+            {
+                tag: "🐟 生物防治技術應用",
+                question: "針對庭院中無法傾倒的大型景觀蓄水池或魚缸，可以用哪一種自然生物防治法來消滅蚊子幼蟲？",
+                options: ["在水池表面種植滿布的浮萍以阻絕空氣", "在水中飼養大肚魚或孔雀魚來捕食孑孓", "定期向池水中倒入高濃度的食鹽水提昇鹽度", "在水面上方直接架設大型紫外線捕蚊燈"],
+                correct: 1,
+                hint: "課本第 66 頁生物防治法：可在無法清除的水缸中飼養大肚魚，防止孑孓孳生。"
+            },
+            {
+                tag: "🎒 個人防護觀念",
+                question: "前往樹叢、校園死角等蚊蟲較多的戶外場所活動時，個人的服裝穿著應該如何選擇才能有效防叮咬？",
+                options: ["穿著吸熱快且厚實的純黑短袖短褲", "穿著淺色長袖衣褲並配合使用合格防蚊藥品", "穿著緊身尼龍防水材質衣物使蚊子無法叮刺", "在皮膚表面塗抹厚重凡士林阻絕蚊蟲口器"],
+                correct: 1,
+                hint: "課本第 66 頁個人防護建議：穿淺色長袖衣褲，並使用合格的防蚊藥品。"
+            },
+            {
+                tag: "✨ 防疫核心口訣",
+                question: "清除登革熱病媒蚊孳生源有標準的黃金四字口訣。請問這四個步驟依序是什麼？",
+                options: ["沖、脫、泡、蓋", "巡、倒、刷、清", "看、聽、想、做", "擦、抹、洗、掃"],
+                correct: 1,
+                hint: "課本第 67 頁清除孳生源的標準步驟為「巡、倒、刷、清」。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：巡",
+                question: "在黃金口訣中，第一個步驟「巡」具體的公共衛生執行內容是什麼？",
+                options: ["巡視社區走廊是否有外來陌生人出入", "經常巡檢居家內外容易積水的容器", "巡查公共道路上是否有違規停放車輛", "巡視鄰居家的家用垃圾桶有沒有蓋好"],
+                correct: 1,
+                hint: "課本第 67 頁：『巡』的意思是經常巡檢居家內外容易積水的容器。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：倒",
+                question: "在黃金口訣中，第二個步驟「倒」除了要將積水倒掉之外，容器隨後的擺放處理動作是什麼？",
+                options: ["將容器重重摔碎並直接當作垃圾丟棄", "將容器「倒置」以免再次累積雨水", "用黑色厚塑膠袋將容器開口完全封死", "把容器拿到太陽底下連續曝曬三天"],
+                correct: 1,
+                hint: "課本第 67 頁：『倒』的完整動作是「倒掉積水，並倒置容器」，防止雨水再次落入。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：刷",
+                question: "在黃金口訣中，第三個步驟「刷」要求我們必須大力刷洗容器內壁。這樣做最主要的科學目的是什麼？",
+                options: ["刷掉容器表面沉積的鐵鏽與大量青苔", "徹底刷洗清除黏附在容器壁上的病媒蚊蟲卵", "讓容器內壁光潔如新，提升外觀美感", "測試容器是否有出現肉眼難見的破損微孔"],
+                correct: 1,
+                hint: "課本第 67 頁：『刷』的目的是「刷洗容器，避免蟲卵再附著」在器壁上。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：清",
+                question: "在黃金口訣中，第四個步驟「清」在廢棄物源頭管理上，要求我們如何落實？",
+                options: ["把所有積水容器都清洗乾淨並繼續堆疊在後院", "進行「容器減量」，清除居家內外不要的容器", "把不用的廢棄容器集中傾倒在隔壁空地", "全面清空室內所有與民生無關的木製家具"],
+                correct: 1,
+                hint: "課本第 67 頁：『清』即是「容器減量，清除不要的容器」，從根本減少積水空間。"
+            },
+            {
+                tag: "🦟 孳生源環境定義與判別",
+                question: "病媒蚊最喜歡在什麼樣的環境特徵中產卵並孵化成孑孓，形成所謂的登革熱「孳生源」？",
+                options: ["水質清澈且流速極快的自然山區溪流中", "戶內外乾淨或骯髒的「靜止積水容器」或積水處", "高溫乾燥且通風良好的高處大樓牆角", "社區中堆滿枯乾落葉的乾燥柏油路面上"],
+                correct: 1,
+                hint: "課本第 67 頁強調，居家內外的「積水容器」是斑蚊繁衍子代的最主要孳生源。"
+            },
+            {
+                tag: "🌱 社區衛生集體參與價值",
+                question: "綜合課本單元四的學習，全體里民與同學共同落實社區環境清潔與防疫，其最終核心目標是什麼？",
+                options: ["大幅提升社區大樓的整體房屋買賣市場價值", "從源頭阻斷孳生源，讓登革熱病媒傳染病消失無蹤", "完全省下購買家用化學防蚊液的日常開銷", "讓社區中的每位參與者都考取專業的環境工程證照"],
+                correct: 1,
+                hint: "課本第 67 頁課文總結：大家一起來打掃，就能讓登革熱消失無蹤！維護環境，人人有責。"
+            }
+        ];
+
+        let currentQIndex = 0;
+        let scoreGems = 0;
+        let hasAnswered = false;
+
+        const quizBox = document.getElementById('quizBox');
+        const completeBox = document.getElementById('completeBox');
+        const progressText = document.getElementById('progressText');
+        const scoreText = document.getElementById('scoreText');
+        const qTag = document.getElementById('qTag');
+        const qText = document.getElementById('qText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackText = document.getElementById('feedbackText');
+        const feedbackHint = document.getElementById('feedbackHint');
+        const btnNext = document.getElementById('btnNext');
+        const reportDetails = document.getElementById('reportDetails');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            hasAnswered = false;
+            btnNext.style.display = 'none';
+            
+            feedbackText.textContent = "💡 請仔細閱讀題目與四個選項，選出最適當的答案。";
+            feedbackText.style.color = "var(--gold-color)";
+            feedbackHint.textContent = "";
+
+            const currentData = quizData[currentQIndex];
+            
+            progressText.textContent = '題目進度: ' + (currentQIndex + 1) + ' / ' + quizData.length + ' 📝';
+            scoreText.innerHTML = '目前得分: <span class="gem-score">⭐ ' + scoreGems + '</span>';
+            qTag.textContent = currentData.tag;
+            qText.textContent = currentData.question;
+
+            optionsContainer.innerHTML = '';
+            currentData.options.forEach((option, idx) => {
+                const button = document.createElement('button');
+                button.classList.add('option-btn');
+                
+                const badge = document.createElement('span');
+                badge.classList.add('option-badge');
+                badge.textContent = String.fromCharCode(65 + idx);
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = option;
+                
+                button.appendChild(badge);
+                button.appendChild(textSpan);
+                
+                button.onclick = function() { checkAnswer(idx, button); };
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex, clickedButton) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+
+            const currentData = quizData[currentQIndex];
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+
+            allButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === currentData.correct) {
+                clickedButton.classList.add('correct-choice');
+                scoreGems += 4; 
+                scoreText.innerHTML = '目前得分: <span class="gem-score">⭐ ' + scoreGems + '</span>';
+                
+                feedbackText.textContent = "✅ 完全正確！核心衛教知識掌握得非常好！";
+                feedbackText.style.color = "#2ECC71";
+            } else {
+                clickedButton.classList.add('wrong-choice');
+                allButtons[currentData.correct].classList.add('correct-choice');
+                
+                feedbackText.textContent = '❌ 答案錯誤。正確答案為 (' + String.fromCharCode(65 + currentData.correct) + ')。';
+                feedbackText.style.color = "#FF6B81";
+                feedbackHint.textContent = '💡 課本核心指引：' + currentData.hint;
+            }
+
+            if (currentQIndex === quizData.length - 1) {
+                btnNext.textContent = "✨ 觀看綜合學習評量報告";
+            } else {
+                btnNext.textContent = "➡️ 下一題";
+            }
+            btnNext.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < quizData.length - 1) {
+                currentQIndex++;
+                loadQuestion();
+            } else {
+                showCompleteScreen();
+            }
+        }
+
+        function showCompleteScreen() {
+            quizBox.style.display = 'none';
+            completeBox.style.display = 'flex';
+
+            let evaluation = "";
+            if (scoreGems === 100) {
+                evaluation = "🏆 表現極致完美！你獲得了【100分頂尖健康守護神】榮譽！你對單元四的所有垃圾分類、登革熱傳染病、病媒蚊特徵與巡倒刷清口訣有著毫無漏洞的完美理解，表現令人讚賞！";
+            } else if (scoreGems >= 80) {
+                evaluation = "🥇 表現非常優秀！你獲得了【社區防疫大隊長】榮譽！你已完全具備正確的居家防蚊常識與社區環保觀念，是守護健康環境的楷模！";
+            } else if (scoreGems >= 60) {
+                evaluation = "🥈 挑戰通過！你獲得了【健康守護小尖兵】榮譽！你已經達到了健體單元的及格評量標準，對於核心的防疫政策有了正確的認知，繼續保持！";
+            } else {
+                evaluation = "🧱 挑戰完成，仍需努力。你目前是【健康衛教實習生】。建議重新閱讀課本第 56 到 67 頁，特別加強記憶登革熱的症狀與『巡、倒、刷、清』的執行細節，下次一定能拿到好成績！";
+            }
+
+            reportDetails.innerHTML = '';
+            
+            const p1 = document.createElement('p');
+            p1.style.fontSize = '1.3rem';
+            p1.style.color = 'var(--gold-color)';
+            p1.style.marginBottom = '15px';
+            p1.style.textAlign = 'center';
+            p1.style.fontWeight = 'bold';
+            p1.textContent = '🎉 25題核心衛教綜合評量結束 🎉';
+            
+            const p2 = document.createElement('p');
+            p2.style.marginBottom = '15px';
+            p2.style.textAlign = 'center';
+            p2.style.fontSize = '1.2rem';
+            p2.innerHTML = '測驗最終總得分：<span class="gem-score" style="font-size:1.5rem; font-weight:bold;">⭐ ' + scoreGems + ' 分</span>';
+            
+            const p3 = document.createElement('p');
+            p3.style.color = '#FFFFFF';
+            p3.style.lineHeight = '1.7';
+            p3.style.background = 'rgba(255,255,255,0.05)';
+            p3.style.padding = '18px';
+            p3.style.borderRadius = '12px';
+            p3.style.border = '1px solid var(--gold-color)';
+            p3.style.textAlign = 'justify';
+            p3.textContent = evaluation;
+            
+            const p4 = document.createElement('p');
+            p4.style.marginTop = '20px';
+            p4.style.fontSize = '0.95rem';
+            p4.style.color = '#BBB';
+            p4.style.textAlign = 'center';
+            p4.style.fontStyle = 'italic';
+            p4.textContent = '「垃圾分類做得好，蟲鼠疾病不來找。巡倒刷清做得對，登革熱病毒全擊潰！」 🛡️🌱';
+            
+            reportDetails.appendChild(p1);
+            reportDetails.appendChild(p2);
+            reportDetails.appendChild(p3);
+            reportDetails.appendChild(p4);
+
+            triggerConfetti();
+        }
+
+        function triggerConfetti() {
+            const colors = ['#FF6B81', '#2ECC71', '#3498DB', '#D4AF37', '#E67E22', '#9B59B6'];
+            for (let i = 0; i < 100; i++) {
+                const p = document.createElement('div');
+                p.classList.add('confetti');
+                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = -20 - (Math.random() * 20) + 'px';
+                
+                const size = Math.random() * 8 + 5;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                
+                const duration = Math.random() * 2.5 + 1.5;
+                p.style.animationDuration = duration + 's';
+                p.style.animationDelay = Math.random() * 0.8 + 's';
+
+                document.body.appendChild(p);
+                removeAfterDelay(p, (duration + 1) * 1000);
+            }
+        }
+
+        function removeAfterDelay(el, delay) {
+            setTimeout(() => { el.remove(); }, delay);
+        }
+
+        function restartGame() {
+            currentQIndex = 0;
+            scoreGems = 0;
+            completeBox.style.display = 'none';
+            quizBox.style.display = 'block';
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
