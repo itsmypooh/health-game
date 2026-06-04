@@ -3,24 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌟 藥丸小隊的健康大冒險！用藥就醫停看聽 🌟</title>
+    <title>社區健康守護尖兵：25題核心衛教挑戰 🌟💖</title>
     <style>
-        /* --- 質感黑金與高效 Scannability 遊戲介面 --- */
+        /* --- 🎨 核心視覺：深邃質感黑、專業華麗金與高對比白 --- */
         :root {
-            --bg-color: #181818;
-            --gold-color: #D4AF37;
-            --white-color: #FFFFFF;
-            --card-bg: #262626;
-            --text-muted: #B0B0B0;
-            --correct-color: #4CAF50;
-            --wrong-color: #FF5722;
-            --accent-pink: #FF6B81;
-            --accent-blue: #4EA8DE;
+            --bg-color: #181818;       
+            --gold-color: #D4AF37;     
+            --white-color: #FFFFFF;    
+            --accent-green: #2ECC71;   
+            --accent-pink: #FF6B81;    
+            --accent-blue: #3498DB;    
+            --card-bg: rgba(255, 255, 255, 0.08);
         }
 
         * {
             box-sizing: border-box;
-            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -28,883 +25,661 @@
         body {
             background-color: var(--bg-color);
             color: var(--white-color);
+            font-family: 'Microsoft JhengHei', -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 15px;
+            padding: 20px;
             overflow-x: hidden;
         }
 
         .game-container {
+            width: 100%;
+            max-width: 650px;
             background: var(--card-bg);
             border: 3px solid var(--gold-color);
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 680px;
-            width: 100%;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            border-radius: 24px;
+            padding: 30px 20px;
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.15);
             text-align: center;
             position: relative;
+            backdrop-filter: blur(10px);
         }
 
         h1 {
             color: var(--gold-color);
-            font-size: 24px;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         }
 
         .subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
+            font-size: 0.95rem;
+            color: #BBBBBB;
             margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
 
-        /* 資訊看板 */
-        .scoreboard {
+        .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(212, 175, 55, 0.08);
-            padding: 12px 18px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            background: rgba(0,0,0,0.4);
+            padding: 12px 20px;
+            border-radius: 15px;
             border: 1px dashed var(--gold-color);
-        }
-
-        .progress-text, .score-text {
-            font-size: 15px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
             font-weight: bold;
         }
 
-        .score-text span {
-            color: var(--gold-color);
-            font-size: 18px;
+        .gem-score {
+            color: #FFDF00;
         }
 
-        /* 題目顯示區 */
         .question-box {
-            font-size: 17px;
-            line-height: 1.6;
+            background: rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 20px;
             margin-bottom: 20px;
-            min-height: 65px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 10px;
-            border: 1px solid #333;
+            border-left: 5px solid var(--gold-color);
             text-align: left;
         }
 
-        /* 誘答選項排版 */
+        .question-tag {
+            font-size: 0.85rem;
+            background: var(--gold-color);
+            color: var(--bg-color);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            font-weight: bold;
+        }
+
         .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .option-btn {
-            background: #2e2e2e;
+            background: rgba(255,255,255,0.07);
+            border: 2px solid rgba(255,255,255,0.2);
             color: var(--white-color);
-            border: 2px solid #444444;
             border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 15px;
+            padding: 14px 18px;
+            font-size: 1.05rem;
+            font-weight: bold;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
+            gap: 12px;
             width: 100%;
-            line-height: 1.4;
         }
 
         .option-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
+            background: rgba(255,255,255,0.15);
             border-color: var(--gold-color);
-            background: #363636;
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.15);
+            transform: translateY(-2px);
         }
 
-        /* 狀態變色 */
-        .option-btn.correct {
-            background-color: rgba(76, 175, 80, 0.2) !important;
-            border-color: var(--correct-color) !important;
-            color: #81C784 !important;
+        .option-badge {
+            background: rgba(255,255,255,0.2);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            color: var(--white-color);
+        }
+
+        .correct-choice {
+            background: linear-gradient(135deg, #1d976c, #93f9b9) !important;
+            border-color: #2ecc71 !important;
+            color: #000000 !important;
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        .wrong-choice {
+            background: linear-gradient(135deg, #eb3349, #f45c43) !important;
+            border-color: #ff6b81 !important;
+            color: #ffffff !important;
+        }
+
+        .correct-choice .option-badge {
+            background: rgba(0,0,0,0.2);
+            color: #000;
+        }
+
+        .feedback-area {
+            min-height: 75px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
             font-weight: bold;
-        }
-
-        .option-btn.wrong {
-            background-color: rgba(255, 87, 34, 0.15) !important;
-            border-color: var(--wrong-color) !important;
-            color: #FF8A65 !important;
-        }
-
-        /* 回饋區 */
-        .feedback-panel {
-            min-height: 80px;
-            margin-top: 10px;
+            color: var(--gold-color);
+            margin-bottom: 20px;
             padding: 12px;
             border-radius: 12px;
-            background: rgba(0, 0, 0, 0.15);
-        }
-
-        .hint-text {
-            color: #AAAAAA;
-            font-size: 13px;
-            font-style: italic;
-            padding: 6px 12px;
-            border-radius: 15px;
-            display: inline-block;
-            background: rgba(255,255,255,0.03);
-            text-align: left;
-            width: 100%;
-        }
-
-        .result-message {
-            font-size: 17px;
-            font-weight: bold;
-            margin-bottom: 6px;
-            text-align: left;
-        }
-
-        .rationale-text {
-            font-size: 14px;
-            color: #DDDDDD;
             line-height: 1.5;
-            text-align: left;
-            padding: 8px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0,0,0,0.2);
+            text-align: center;
         }
 
-        .next-btn {
-            background: linear-gradient(135deg, var(--gold-color), #B38F24);
-            color: #181818;
+        .feedback-hint {
+            font-size: 0.9rem;
+            color: #DDDDDD;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        .next-container {
+            display: flex;
+            justify center;
+        }
+
+        .btn-next {
+            background: var(--gold-color);
+            color: var(--bg-color);
             border: none;
             border-radius: 50px;
-            padding: 12px 35px;
-            font-size: 16px;
+            padding: 14px 45px;
+            font-size: 1.15rem;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 15px rgba(214, 175, 55, 0.4);
             transition: all 0.2s ease;
             display: none;
         }
 
-        .next-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+        .btn-next:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(214, 175, 55, 0.6);
         }
 
-        .summary-view {
+        .complete-screen {
             display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .restart-btn {
-            background: linear-gradient(135deg, var(--accent-blue), #0077B6);
+        .complete-title {
+            font-size: 2rem;
+            color: var(--gold-color);
+            margin-bottom: 15px;
+            animation: float 2s infinite alternate;
+        }
+
+        .complete-report {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.06);
+            padding: 25px;
+            border-radius: 18px;
+            border: 2px dashed var(--gold-color);
+            text-align: left;
+            width: 100%;
+        }
+
+        .btn-restart {
+            background: var(--accent-blue);
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 12px 35px;
-            font-size: 16px;
+            padding: 14px 40px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
-        }
-
-        .trophy {
-            font-size: 50px;
-            margin-bottom: 10px;
-            animation: float 2s ease-in-out infinite;
-        }
-
-        .animate-correct {
-            animation: popCorrect 0.4s ease forwards;
-        }
-        @keyframes popCorrect {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(76, 175, 80, 0.4); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-            100% { transform: translateY(0px); }
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            transition: all 0.2s ease;
         }
 
         .confetti {
             position: fixed;
-            width: 7px;
-            height: 7px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
+            z-index: 999;
             pointer-events: none;
             animation: fall linear forwards;
-            z-index: 999;
         }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
         @keyframes fall {
-            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div id="particle-container"></div>
+    <div class="game-container" id="quizBox">
+        <h1 id="mainTitle">社區健康守護尖兵 🛡️</h1>
+        <p class="subtitle">國小健康與體育・單元四核心知識評量</p>
 
-    <div class="game-container">
-        <!-- 答題進行畫面 -->
-        <div id="quiz-view">
-            <h1>🌟 藥丸小隊健康冒險 🌟</h1>
-            <p class="subtitle">為健康把關！就醫用藥停看聽 🧠📚</p>
-
-            <div class="scoreboard">
-                <div class="progress-text">關卡挑戰：<span id="current-quest">1</span> / 25</div>
-                <div class="score-text">獲得寶石：<span id="score-gems">💎 0</span></div>
-            </div>
-
-            <div class="question-box" id="question-text">網頁魔法生成中...</div>
-            <div class="options-grid" id="options-container"></div>
-            
-            <div class="feedback-panel" id="feedback-area">
-                <div class="hint-text" id="hint-display">提示準備中...</div>
-            </div>
-
-            <button class="next-btn" id="next-quest-btn">➡️ 前進下一關</button>
+        <div class="status-bar">
+            <div id="progressText">題目進度: 1 / 25 📝</div>
+            <div id="scoreText">目前得分: <span class="gem-score">⭐ 0</span></div>
         </div>
 
-        <!-- 遊戲結束統計畫面 -->
-        <div class="summary-view" id="summary-view">
-            <div class="trophy">🏆</div>
-            <h1 style="color: var(--gold-color);">冒險結束！挑戰完成！</h1>
-            <p style="font-size: 15px; margin: 15px 0;" id="final-cheer">你成功通過了 25 關高難度用藥大考驗！</p>
-            
-            <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid var(--gold-color); margin-bottom: 20px;">
-                <p style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">最終成果報告</p>
-                <p style="font-size: 18px; color: var(--gold-color);" id="final-score-display">獲得寶石：💎 0 顆</p>
-                <p style="font-size: 14px; color: var(--text-muted); margin-top: 5px;" id="performance-eval">等級：學習魔法師</p>
-            </div>
+        <div class="question-box">
+            <div class="question-tag" id="qTag">載入中</div>
+            <div class="question-text" id="qText">題目載入中...</div>
+        </div>
 
-            <button class="restart-btn" id="restart-game-btn">🔄 重啟全新冒險</button>
+        <div class="options-grid" id="optionsContainer"></div>
+
+        <div class="feedback-area" id="feedbackArea">
+            <div id="feedbackText">🌟 請詳讀題幹並選出最適當的答案。</div>
+            <div id="feedbackHint" class="feedback-hint"></div>
+        </div>
+
+        <div class="next-container">
+            <button class="btn-next" id="btnNext" onclick="nextQuestion()">➡️ 下一題</button>
         </div>
     </div>
 
+    <div class="game-container complete-screen" id="completeBox">
+        <h2 class="complete-title">🎆 評量完成 🎆</h2>
+        <div class="complete-report" id="reportDetails"></div>
+        <button class="btn-restart" onclick="restartGame()">🔄 重新挑戰</button>
+    </div>
+
     <script>
+        // 🔮 25 題核心知識庫（第 16 題答案已精確修正為 1，即選項 B）
+        const quizData = [
+            {
+                tag: "🗑️ 垃圾分類：廚餘判定",
+                question: "放學後我們常和家人幫忙整理社區。關於垃圾分類，下列哪一項物品屬於課本定義的「廚餘」？",
+                options: ["落葉與枯樹枝", "吃剩的飯菜餐點", "裝便當的紙製外包裝餐盒", "廢棄的塑膠免洗筷與湯匙"],
+                correct: 1,
+                hint: "課本第 59 頁：吃剩的飯菜等物品在分類上屬於「廚餘」處理。"
+            },
+            {
+                tag: "♻️ 資源回收：金屬分類",
+                question: "整理社區環境時撿到許多廢棄容器。下列哪一項物品屬於可以回收再利用的「資源回收物」？",
+                options: ["沾了餐飲油污的廚房衛生紙", "包裝一般垃圾用的乾淨塑膠袋", "廢棄的鐵罐與鋁罐", "破損無法修補的陶瓷馬克杯"],
+                correct: 2,
+                hint: "課本第 59 頁：塑膠杯、玻璃瓶、鐵鋁罐、紙製品與乾電池均屬於資源回收。"
+            },
+            {
+                tag: "🔋 資源回收：有害物質",
+                question: "日常生活中使用完的「乾電池」，因為含有特定重金屬化學物質，在分類上應該如何正確處理？",
+                options: ["歸類為資源回收物集中處理", "直接當作一般垃圾丟入垃圾車", "投入廚餘桶當作有機肥集中發酵", "在社區空地就地掩埋以利自然降解"],
+                correct: 0,
+                hint: "課本第 59 頁特別將「乾電池」標示在資源回收的範疇中，必須回收以免環境污染。"
+            },
+            {
+                tag: "🧼 環境衛生效益",
+                question: "課本指出，社區做好垃圾分類與定時清理環境，最主要的公共衛生效益是什麼？",
+                options: ["有效活化社區垃圾焚化爐的運轉效能", "節省社區每個月的清潔管理費開銷", "美化社區大樓的外觀以提升居住品質", "避免堆積垃圾引來蟲鼠並造成髒亂與疾病"],
+                correct: 3,
+                hint: "課本第 59 頁：做好垃圾分類與清理，可以避免引來蟲鼠、造成髒亂與疾病。"
+            },
+            {
+                tag: "🐀 病媒與傳染病",
+                question: "若社區環境髒亂導致老鼠大量孳生，老鼠最容易在社區中傳播哪一種嚴重的鼠媒傳染病？",
+                options: ["漢他病毒出血熱", "登革熱病媒傳染", "流行性感冒病毒", "水痘與帶狀皰疹"],
+                correct: 0,
+                hint: "課本第 60 頁：環境髒亂引來的「老鼠」，會傳播漢他病毒出血熱等疾病。"
+            },
+            {
+                tag: "🦟 登革熱公共衛生別名",
+                question: "公共衛生領域常提到的「登革熱」，在台灣民間傳統的醫學俗稱中又被稱為什麼？",
+                options: ["黑死病", "天狗熱", "瘧疾", "日本腦炎"],
+                correct: 1,
+                hint: "課本第 63 頁明確註記：登革熱又俗稱「天狗熱」。"
+            },
+            {
+                tag: "🎯 登革熱傳染途徑",
+                question: "關於登革熱病毒在人類之間的傳播管道，下列哪一項敘述是完全正確的？",
+                options: ["與患者共用餐具經由唾液接觸傳染", "吸入患者咳嗽時產生的飛沫而引發感染", "經由特定病媒蚊叮咬患者後再叮咬健康人而傳染", "接觸到髒亂的垃圾或污水而經由皮膚黏膜直接感染"],
+                correct: 2,
+                hint: "課本第 63 頁：登革熱是透過病媒蚊叮咬患者，病毒在體內繁殖後再傳播給健康的人。"
+            },
+            {
+                tag: "🔍 病媒蚊種類觀念",
+                question: "是不是生活周遭所見到的「所有種類蚊子」，只要叮咬人類就會傳播登革熱？",
+                options: ["是的，只要是蚊子吸血就會傳播病毒", "不是，只有特定的病媒蚊才具有傳播登革熱病毒的能力", "只有體型大於一般家蚊的蚊子才會傳染", "只有生活在地下道水溝的普通黑頭蚊才會傳染"],
+                correct: 1,
+                hint: "課本第 63 頁：並不是所有的蚊子都帶有登革熱病毒，只有病媒蚊才會傳染。"
+            },
+            {
+                tag: "🔬 台灣核心病媒蚊",
+                question: "在台灣地區，主要負責傳播登革熱病毒的「兩大關鍵病媒蚊」是哪兩種？",
+                options: ["熱帶家蚊、地下家蚊", "三斑家蚊、環帶家蚊", "埃及斑蚊、白線斑蚊", "中華瘧蚊、小黑蚊"],
+                correct: 2,
+                hint: "課本第 64 頁有大幅圖片介紹台灣的兩大主要病媒蚊：埃及斑蚊與白線斑蚊。"
+            },
+            {
+                tag: "🦟 斑蚊外觀辨識",
+                question: "要如何透過外觀特徵，分辨出社區中的蚊子是否為埃及斑蚊或白線斑蚊等病媒蚊？",
+                options: ["觀察其翅膀是否呈現半透明的草綠色", "觀察其身體和腳上是否有黑白相間的斑紋", "觀察其頭部複眼是否呈現明顯的亮紅色", "觀察其腹部兩側是否完全呈現純白色"],
+                correct: 1,
+                hint: "課本第 64 頁：埃及斑蚊與白線斑蚊的共同外觀特徵是身體和腳上有黑白相間的斑紋。"
+            },
+            {
+                tag: "🤒 登革熱症狀：體溫反應",
+                question: "當人體不小心感染登革熱病毒後，最先出現的典型全身性生理症狀通常是什麼？",
+                options: ["突發性的高燒反應", "體溫持續異常偏低的低體溫症", "慢性反覆咳嗽與多痰症狀", "皮膚表面大面積的乾燥脫皮"],
+                correct: 0,
+                hint: "課本第 65 頁列出的登革熱核心症狀，第一個即為「高燒」。"
+            },
+            {
+                tag: "👁️ 登革熱症狀：頭部特徵",
+                question: "感染登革熱時，患者在眼睛周圍往往會感受到哪一種極具指標性的特殊疼痛？",
+                options: ["視網膜急性出血痛", "後眼窩深度疼痛", "眉毛周圍皮膚刺痛", "眼角膜紅腫癢痛"],
+                correct: 1,
+                hint: "課本第 65 頁特別圖示指明，登革熱的典型頭部症狀之一是「後眼窩痛」。"
+            },
+            {
+                tag: "💪 登革熱症狀：運動系統",
+                question: "登革熱又常讓患者感到骨頭劇烈不適，這是因為它會引發哪兩種部位的嚴重疼痛？",
+                options: ["指甲甲床痛、腳跟骨痛", "肌肉痛、關節痛", "皮膚表面痛、毛囊深處痛", "脊椎骨髓液抽痛"],
+                correct: 1,
+                hint: "課本第 65 頁指出，全身性的運動與骨骼系統反應包含「肌肉痛」與「關節痛」。"
+            },
+            {
+                tag: "🩺 登革熱症狀：消化與皮膚反應",
+                question: "下列哪一組消化與皮膚系統的反應，同樣屬於課本第 65 頁所列出的登革熱常見症狀？",
+                options: ["腹瀉不止與慢性呼吸困難", "噁心、食慾不振、皮膚出疹", "頻尿尿急與反覆流鼻血", "嚴重失眠與夜間盜汗"],
+                correct: 1,
+                hint: "課本第 65 頁列出的完整臨床症狀包含：高燒、頭痛、噁心、食慾不振、後眼窩痛、肌肉痛、關節痛、出疹。"
+            },
+            {
+                tag: "🏥 疑似感染之醫療處置",
+                question: "如果在登革熱流行季節發現自己或家人出現疑似症狀，最正確且安全的醫療處理方式是什麼？",
+                options: ["自行到藥局購買市售成藥服用並待在家中觀察", "進行劇烈運動大量發汗以加速病毒排出", "盡快就醫，針對出現的症狀做治療，並且多休息", "自行在房間完全隔離，等待一至兩週讓症狀自然痊癒"],
+                correct: 2,
+                hint: "課本第 65 頁貼心宣導：感染登革熱要盡快就醫，針對出現的症狀做治療，並且多休息。"
+            },
+            {
+                tag: "🏡 物理防治：室內防蚊",
+                question: "為了阻絕病媒蚊進入室內叮咬家人，里長建議居家環境的常規硬體設施應該如何妥善加強？",
+                options: ["全天候緊閉室內所有氣窗與通風口", "在室內門窗加裝防護紗窗與紗門", "調高室內冷氣運轉溫度以降低蚊蟲活性", "將陽台外牆塗成防蚊的深黑色調"],
+                correct: 1, // ✨ 核心修正：正確指向 B 選項
+                hint: "課本第 66 頁提到物理防治：室內核心做法是加裝紗窗紗門。"
+            },
+            {
+                tag: "🐟 生物防治技術應用",
+                question: "針對庭院中無法傾倒的大型景觀蓄水池或魚缸，可以用哪一種自然生物防治法來消滅蚊子幼蟲？",
+                options: ["在水池表面種植滿布的浮萍以阻絕空氣", "在水中飼養大肚魚或孔雀魚來捕食孑孓", "定期向池水中倒入高濃度的食鹽水提昇鹽度", "在水面上方直接架設大型紫外線捕蚊燈"],
+                correct: 1,
+                hint: "課本第 66 頁生物防治法：可在無法清除的水缸中飼養大肚魚，防止孑孓孳生。"
+            },
+            {
+                tag: "🎒 個人防護觀念",
+                question: "前往樹叢、校園死角等蚊蟲較多的戶外場所活動時，個人的服裝穿著應該如何選擇才能有效防叮咬？",
+                options: ["穿著吸熱快且厚實的純黑短袖短褲", "穿著淺色長袖衣褲並配合使用合格防蚊藥品", "穿著緊身尼龍防水材質衣物使蚊子無法叮刺", "在皮膚表面塗抹厚重凡士林阻絕蚊蟲口器"],
+                correct: 1,
+                hint: "課本第 66 頁個人防護建議：穿淺色長袖衣褲，並使用合格的防蚊藥品。"
+            },
+            {
+                tag: "✨ 防疫核心口訣",
+                question: "清除登革熱病媒蚊孳生源有標準的黃金四字口訣。請問這四個步驟依序是什麼？",
+                options: ["沖、脫、泡、蓋", "巡、倒、刷、清", "看、聽、想、做", "擦、抹、洗、掃"],
+                correct: 1,
+                hint: "課本第 67 頁清除孳生源的標準步驟為「巡、倒、刷、清」。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：巡",
+                question: "在黃金口訣中，第一個步驟「巡」具體的公共衛生執行內容是什麼？",
+                options: ["巡視社區走廊是否有外來陌生人出入", "經常巡檢居家內外容易積水的容器", "巡查公共道路上是否有違規停放車輛", "巡視鄰居家的家用垃圾桶有沒有蓋好"],
+                correct: 1,
+                hint: "課本第 67 頁：『巡』的意思是經常巡檢居家內外容易積水的容器。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：倒",
+                question: "在黃金口訣中，第二個步驟「倒」除了要將積水倒掉之外，容器隨後的擺放處理動作是什麼？",
+                options: ["將容器重重摔碎並直接當作垃圾丟棄", "將容器「倒置」以免再次累積雨水", "用黑色厚塑膠袋將容器開口完全封死", "把容器拿到太陽底下連續曝曬三天"],
+                correct: 1,
+                hint: "課本第 67 頁：『倒』的完整動作是「倒掉積水，並倒置容器」，防止雨水再次落入。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：刷",
+                question: "在黃金口訣中，第三個步驟「刷」要求我們必須大力刷洗容器內壁。這樣做最主要的科學目的是什麼？",
+                options: ["刷掉容器表面沉積的鐵鏽與大量青苔", "徹底刷洗清除黏附在容器壁上的病媒蚊蟲卵", "讓容器內壁光潔如新，提升外觀美感", "測試容器是否有出現肉眼難見的破損微孔"],
+                correct: 1,
+                hint: "課本第 67 頁：『刷』的目的是「刷洗容器，避免蟲卵再附著」在器壁上。"
+            },
+            {
+                tag: "🔍 口訣步驟實務：清",
+                question: "在黃金口訣中，第四個步驟「清」在廢棄物源頭管理上，要求我們如何落實？",
+                options: ["把所有積水容器都清洗乾淨並繼續堆疊在後院", "進行「容器減量」，清除居家內外不要的容器", "把不用的廢棄容器集中傾倒在隔壁空地", "全面清空室內所有與民生無關的木製家具"],
+                correct: 1,
+                hint: "課本第 67 頁：『清』即是「容器減量，清除不要的容器」，從根本減少積水空間。"
+            },
+            {
+                tag: "🦟 孳生源環境定義與判別",
+                question: "病媒蚊最喜歡在什麼樣的環境特徵中產卵並孵化成孑孓，形成所謂的登革熱「孳生源」？",
+                options: ["水質清澈且流速極快的自然山區溪流中", "戶內外乾淨或骯髒的「靜止積水容器」或積水處", "高溫乾燥且通風良好的高處大樓牆角", "社區中堆滿枯乾落葉的乾燥柏油路面上"],
+                correct: 1,
+                hint: "課本第 67 頁強調，居家內外的「積水容器」是斑蚊繁衍子代的最主要孳生源。"
+            },
+            {
+                tag: "🌱 社區衛生集體參與價值",
+                question: "綜合課本單元四的學習，全體里民與同學共同落實社區環境清潔與防疫，其最終核心目標是什麼？",
+                options: ["大幅提升社區大樓的整體房屋買賣市場價值", "從源頭阻斷孳生源，讓登革熱病媒傳染病消失無蹤", "完全省下購買家用化學防蚊液的日常開銷", "讓社區中的每位參與者都考取專業的環境工程證照"],
+                correct: 1,
+                hint: "課本第 67 頁課文總結：大家一起來打掃，就能讓登革熱消失無蹤！維護環境，人人有責。"
+            }
+        ];
+
+        let currentQIndex = 0;
+        let scoreGems = 0;
+        let hasAnswered = false;
+
+        const quizBox = document.getElementById('quizBox');
+        const completeBox = document.getElementById('completeBox');
+        const progressText = document.getElementById('progressText');
+        const scoreText = document.getElementById('scoreText');
+        const qTag = document.getElementById('qTag');
+        const qText = document.getElementById('qText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackText = document.getElementById('feedbackText');
+        const feedbackHint = document.getElementById('feedbackHint');
+        const btnNext = document.getElementById('btnNext');
+        const reportDetails = document.getElementById('reportDetails');
+
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // 25 題經過完美除錯與高難度素養誘答設計的陣列
-            const quizData = [
-                {
-                    q: "1. 阿倫在網路上看到『吃龍眼可以治咳嗽』的訊息，他如果想知道這個偏方是真是假，第一步應該先怎麼做比較安全？",
-                    o: [
-                        "因為龍眼是天然的水果，多吃頂多沒效但不會傷身體，所以直接吃很多看看 🍇",
-                        "檢查該健康網站是否有註明通訊聯絡方式，並查證作者是不是醫療專業人員 🔎",
-                        "因為這篇文章是在班上的親密好友群組裡分享的，代表來源一定很安全 📱",
-                        "只要這篇龍眼治咳嗽的文章在網路上有超過一萬個網友按讚，就可以直接相信 👍"
-                    ],
-                    r: [
-                        "天然水果吃太多也會攝取過多糖分，且盲目嘗試可能延誤就醫，使咳嗽更嚴重喔！",
-                        "完全正確！🌟 這就是課本提到的「考慮資訊來源」，確認網站存在並查證作者是否為醫療專家。",
-                        "朋友也是出於好心分享，但同學並不是醫療專家，轉傳的訊息仍然有可能是假偏方喔！",
-                        "網路上的讚數是可以被製造出來的不實數據，不能當作醫學正確性的依據。"
-                    ],
-                    h: "回想課本第45頁，在「分辨真、假訊息」的方法中，考慮資訊來源是要調查網站的什麼呢？",
-                    c: 1
-                },
-                {
-                    q: "2. 麥麥吃了咳嗽藥散之後覺得症狀改善了，媽媽說那是因為藥物有哪一種國家安全憑證比較讓人放心？",
-                    o: [
-                        "因為它是連鎖藥局賣得最好、外包裝上有寫著「強效神奇」的進口藥粉 💊",
-                        "因為該藥物包裝上有印著「衛生福利部藥物許可證」的字樣與證號 🛡️",
-                        "因為這款咳嗽藥散的成分完全是由天然草本植物提煉，絕對不會有任何化學副作用 🌱",
-                        "因為它是媽媽在電視健康購物頻道上，看到名醫推薦才打電話訂購的 📺"
-                    ],
-                    r: [
-                        "外包裝寫「強效」只是廣告詞，藥物安不安全必須看有沒有通過政府國家的核准證照。",
-                        "完全正確！🌟 課本第44頁媽媽特別強調，有衛生福利部藥物許可證的藥物才比較安全。",
-                        "許多天然草本植物若未經科學劑量管制或來源不合法，毒性可能更強，並非天然就一定安全。",
-                        "電視購物頻道的推薦通常包含商業廣告成分，不能直接替代國家核發的合格證照。"
-                    ],
-                    h: "找找課本第44頁，麥麥的媽媽說有哪一個政府部門核發許可證的藥物較安全？",
-                    c: 1
-                },
-                {
-                    q: "3. 網路上常看到聳動的健康文章標題如：「驚！吃這種平民蔬菜竟然會造成器官衰竭！」，我們應該抱持什麼習慣？",
-                    o: [
-                        "為了保險起見，立刻通知家人從今天起再也不要吃這種蔬菜 🥬",
-                        "不被誇張、嚇人的標題吸引，應該詳細閱讀內文是否有真實的科學根據 📖",
-                        "趕快把這個驚人的標題分享到家族群組，提醒所有親戚不要吃 📱",
-                        "只要該網頁下方有留下一個諮詢電話，就代表這個標題絕對不會是假的 ☎️"
-                    ],
-                    r: [
-                        "直接盲信聳動標題會造成不必要的偏食或恐慌，反而影響身體的均衡營養喔。",
-                        "完全正確！🌟 課本強調「詳細閱讀內文」，不被誇大標題吸引，才能分辨資訊是否有真正根據。",
-                        "在尚未確認真實性之前就盲目轉傳聳動標題，會成為散播醫藥假訊息的幫凶喔！",
-                        "有些不實網站會留下虛構的聯絡電話，我們必須詳細閱讀內文並向師長進一步求證。"
-                    ],
-                    h: "對抗這類用嚇人標題騙點閱率的文章，課本第45頁教我們不要被標題吸引，而要「詳細...」？",
-                    c: 1
-                },
-                {
-                    q: "4. 如果小朋友在網路上看到半信半疑的健康資訊，想要自己查證，可以利用衛生福利部食品藥物管理署成立的哪一個官方網站？",
-                    o: [
-                        "「食藥好文網」 🌐",
-                        "「全國網路偏方闢謠百科」 📘",
-                        "「社區健保藥局地圖查詢網」 🗺️",
-                        "「中央健康保險醫療故事館」 🏫"
-                    ],
-                    r: [
-                        "完全正確！🌟 食藥署成立的「食藥好文網」，能讓民眾在眾多網路資訊中得到正確的醫藥知識。",
-                        "這是虛構的網站名稱，小心不要被看起來很像、聽起來很正義的名字騙了喔！",
-                        "該地圖網站是用來查詢家附近哪裡有健保特約藥局的，並不是用來看醫藥闢謠文章的喔。",
-                        "這也是虛構的名稱，健保署主要是管理健保與特約機構，闢謠知識要看食藥署的網站。"
-                    ],
-                    h: "看看課本第45頁右下角粉紅色的「充電站」，裡面有一個四個字的網站名稱喔！",
-                    c: 0
-                },
-                {
-                    q: "5. 同學傳訊息說：「感冒藥加咖啡一起喝，頭痛會好得更快、上課精神更好！」，下列關於此偏方的敘述何者正確？",
-                    o: [
-                        "這是正確的，因為咖啡因可以提神，剛好可以抵消感冒藥帶來的瞌睡感 ☕",
-                        "這是錯誤的，咖啡含有咖啡因，和藥物一起吃可能會引發交互作用，產生不良後果 ❌",
-                        "外只要咖啡裡面有加上鮮奶變成拿鐵，就不會和感冒藥裡面的化學成分起衝突 🥛",
-                        "只要在吃飽飯後半小時再喝咖啡，感冒藥和咖啡就不會在胃裡面打架了 🥪"
-                    ],
-                    r: [
-                        "非常危險！咖啡因與感冒藥中的某些成分產生交互作用，可能會引發心悸、心跳加速與嚴重失眠。",
-                        "完全正確！🌟 課本第46頁提到感冒藥加咖啡是危險偏方，服藥唯一的最佳選擇是溫開水。",
-                        "牛奶同樣會干擾某些抗生素或藥物的吸收，拿鐵咖啡也絕對不能拿來配藥！",
-                        "不論是否空腹，藥物成分與咖啡因在體內被吸收後，依然會在血液和器官中產生不良交互作用。"
-                    ],
-                    h: "想一想，咖啡裡含有的特定興奮成分，如果跟感冒藥融合在一起，會不會對心臟造成負擔呢？",
-                    c: 1
-                },
-                {
-                    q: "6. 鄰居阿姨從國外旅遊帶回一罐沒有中文標示、也沒有藥物許可證的止痛藥。我們應該遵守什麼原則？",
-                    o: [
-                        "因為是國外帶回來的強效進口藥，只要現在沒有頭痛，就可以先收著等下次痛再吃 💁",
-                        "遵守「不聽、不信、不買、不吃、不推薦」的原則，拒絕服用來路不明的藥品 🙅‍♂️",
-                        "可以先上網用手機鏡頭掃描它的外觀，只要長得跟大牌子很像就可以放心吃 📱",
-                        "只要鄰居阿姨拍胸脯保證她自己吃過很有效，就代表這個藥對每個人都安全 👩"
-                    ],
-                    r: [
-                        "國外藥物不一定適合台灣人的體質，且沒有中文標示和許可證，出了問題完全沒有保障！",
-                        "完全正確！🌟 課本第47頁強調，對來路不明的藥品，一定要堅守這「五不」原則來保護自己。",
-                        "許多劣藥或假藥的外觀做得跟真藥一模一樣，絕對不能光靠外觀長相來判斷安全性。",
-                        "每個人的體質、病情與過敏史都不同，別人吃了沒事不代表你吃了不會中毒或過敏喔！"
-                    ],
-                    h: "快看看課本第47頁右邊，有一個綠色大盾牌，上面寫了對來路不明藥品的五個「不...」？",
-                    c: 1
-                },
-                {
-                    q: "7. 叔叔吃完某種新買的保健食品後，身體突然冒出大量紅疹且嚴重搔癢。關於這個狀況，下列哪一種觀念是正確的？",
-                    o: [
-                        "這代表保健食品正在幫身體進行「排毒反應」，是好現象，應該繼續吃下去 🧪",
-                        "這只是皮膚太乾燥或衣服材質不好引起的，跟剛剛吞進去的保健食品完全無關 👕",
-                        "這可能是身體出現了用藥後的不良反應，也就是發生了「藥物過敏」 🚨",
-                        "這代表叔叔的身體正在適應這種高檔的營養成分，過幾天身體習慣了紅疹就會退 ☀️"
-                    ],
-                    r: [
-                        "千萬別相信排毒謠言！這是非常危險的醫藥騙局，盲目繼續服用會導致過敏性休克致命！",
-                        "如果在服藥或吃保健品後短時間內出現症狀，必須高度懷疑是藥物所引起的過敏不良反應。",
-                        "完全正確！🌟 皮膚紅疹、搔癢或起水泡，是課本第48頁提到的典型藥物過敏不良反應。",
-                        "身體出紅疹是免疫系統在發出嚴重的抗議與求救訊號，絕對不是在適應營養喔！"
-                    ],
-                    h: "注意看課本第46頁，右上角的小朋友問：吃保健食品出紅疹是排毒反應嗎？下面的人怎麼說？",
-                    c: 2
-                },
-                {
-                    q: "8. 課本第48頁指出，當我們吃完藥物後，可以利用哪六個字組成的口訣來細心觀察自己有沒有「藥物過敏」？",
-                    o: [
-                        "酸、痛、麻、癢、抽、累 🍋",
-                        "疹、破、痛、紅、腫、燒 🔥",
-                        "咳、流、噴、熱、吐、暈 😷",
-                        "望、聞、問、切、聽、看 👁️"
-                    ],
-                    r: [
-                        "這不是藥物過敏的專屬核心辨識口訣喔，請回想課本第48頁的紅色警戒字眼。",
-                        "完全正確！🌟 疹（紅疹）、破（口腔潰瘍）、痛（喉嚨痛）、紅（眼睛紅腫）、腫（嘴脣腫）、燒（發燒）是過敏六大金鑰！",
-                        "這些是一般普通感冒或流感的常見身體症狀，並不是藥物過敏特定的六字辨識口訣喔。",
-                        "這是傳統中醫看病時的四診診斷方法，與現代醫學觀察藥物不良反應的過敏口訣無關。"
-                    ],
-                    h: "這個口訣包含了：皮膚出紅疹、口腔破皮、喉嚨痛、眼睛紅腫灼熱、嘴脣腫、身體發燒！",
-                    c: 1
-                },
-                {
-                    q: "9. 阿倫發現自己服藥後，不僅喉嚨開始劇烈疼痛，口腔黏膜也出現潰瘍破皮。此時他第一時間最正確的處理方式是什麼？",
-                    o: [
-                        "馬上停藥，並攜帶正在服用的所有藥物與藥袋，儘速前往醫院就醫 🏥",
-                        "既然已經喉嚨痛了，應該趕快把剩下的藥丸全部吞完，病才會好得比較快 💊",
-                        "自己走到家門口的西藥房，隨便買一瓶噴喉嚨的消炎止痛噴劑來噴 🏪",
-                        "這只是火氣大，去廚房倒一杯高鹽分的鹽水來用力漱口，等裝天看看 裝"
-                    ],
-                    r: [
-                        "完全正確！🌟 「馬上停藥」能阻止過敏惡化，帶上「藥物與藥袋」能讓醫生立刻判定是哪種成分過敏！",
-                        "極度危險！口腔潰瘍和喉嚨痛是嚴重的藥物過敏徵兆，繼續吃會引發黏膜大面積壞死脫落！",
-                        "在不知道過敏原的情況下亂用其他藥劑，可能會引發更嚴重、更多重的交叉過敏反應。",
-                        "鹽水漱口無法解決體內免疫系統的藥物過敏反應，拖延就醫可能會導致生命危險。"
-                    ],
-                    h: "當身體已經對藥物產生不良反應時，絕對不能再把藥吃下去！而且看醫生時一定要帶上什麼東西？",
-                    c: 0
-                },
-                {
-                    q: "10. 為了防止以後去看醫生時，醫師不小心又開出會讓自己過敏的危險藥物，就醫時我們應該主動請醫師做什麼事？",
-                    o: [
-                        "請醫師用不褪色的原子筆，直接把過敏藥名端正地寫在自己的健保卡背面 ✏️",
-                        "主動告知醫師自己的藥物過敏情形，並請醫師在「健保卡中註記」 💳",
-                        "要求醫師把過敏的藥名寫在學校的健康生活聯絡簿上，請老師幫忙看著 📒",
-                        "只要自己用頭腦用力背下來，以後每次看病時用嘴巴大聲背誦給櫃檯聽 🗣️"
-                    ],
-                    r: [
-                        "在健保卡背面手寫字是不符合醫療常規的，別的醫院電腦系統無法讀取卡片背面的手寫字喔。",
-                        "完全正確！🌟 透過健保卡的IC晶片電子註記，不論去哪家特約醫院診所，電腦都能自動跳出警示、避開該藥！",
-                        "學校聯絡簿是給導師和家長看的生活紀錄，外面的醫生在看診系統裡是完全讀不到聯絡簿的。",
-                        "藥物的化學和學名極其複雜、字數又長，光靠自己和家人的頭腦死記，非常容易記錯字或漏字。"
-                    ],
-                    h: "看一看課本第49頁下方的「充電站」提示，就醫時要主動告知過敏情形，並請醫師在什麼地方註記？",
-                    c: 1
-                },
-                {
-                    q: "11. 當醫師開好處方，我們到櫃檯準備領取藥物的時候，為了確保沒有拿錯別人的藥，我們應該請誰幫忙再次核對？",
-                    o: [
-                        "請坐在旁邊長椅上、看起來很急著看報紙的陌生伯伯 🧓",
-                        "請當天陪自己去醫院、剛好在旁邊玩玩具的同班同學 🎒",
-                        "請穿著白袍、配戴執照證件的親切專業「藥師」幫忙再次核對 🧑‍⚕️",
-                        "請在門口負責引導車輛、態度非常認真的警衛叔叔 👨‍✈️"
-                    ],
-                    r: [
-                        "路人伯伯不具備醫療藥學專業，且這涉及個人生病隱私，不應該交給陌生人幫忙看藥喔。",
-                        "同學年紀跟我們一樣大，看不懂複雜的處方字體與劑量標示，無法起到核對的安全作用。",
-                        "完全正確！🌟 課本第49頁強調：「領藥時，請藥師幫忙再次核對」，這是確保用藥正確的專業防線。",
-                        "警衛叔叔的專業是維護治安與交通，並不具備辨識藥物、劑量與用法的醫療證照。"
-                    ],
-                    h: "在藥局或醫院的領藥櫃檯，負責把藥物交給你、並叮嚀你一天吃幾次的人是哪一種專業醫事人員？",
-                    c: 2
-                },
-                {
-                    q: "12. 阿倫的爸爸患有慢性高血壓，需要長期服藥。他拿著醫師開立的「慢性病連續處方箋」，可以直接去哪裡領藥最便民？",
-                    o: [
-                        "家裡附近的健保特約「社區藥局」 🏥",
-                        "附近大型連鎖超市的生鮮食品收銀檯 🛒",
-                        "社區的郵局儲匯櫃檯或村里長辦公室 🏣",
-                        "24小時營業、有販售熱食的連鎖便利商店 🏪"
-                    ],
-                    r: [
-                        "完全正確！🌟 課本第50頁提到外公拿慢性處方箋去社區藥局領藥，既省時又不用去大醫院重新排隊。",
-                        "超市雖然可以買菜買肉，但是沒有合法的無菌藥品調劑台，更沒有專業藥師可以調劑處方箋喔。",
-                        "郵局是負責寄信和寄包裹的，里長辦公室是處理社區行政的，兩者都依法不能調劑和發放處方藥物。",
-                        "超商雖然能繳費、買零食，內但處方箋藥物屬於管制醫療品，超商是絕對不能受理調劑的。"
-                    ],
-                    h: "課本第50頁的阿倫和家人利用假日，一起去了解哪一個地方提供了許多多元的便民服務？",
-                    c: 0
-                },
-                {
-                    q: "13. 媽媽在整理家中醫藥箱時，發現有上一次生病沒喝完的廢棄過期藥水。以下哪一種處理方式符合課本的健康環保觀念？",
-                    o: [
-                        "本著勤儉的精神，只要把過期藥水放進冰箱冷凍，等下次感冒再拿出來退冰喝 🧊",
-                        "直接把藥水倒入浴室馬桶或廚房流理台，順著水溝沖走 🚽",
-                        "帶去社區藥局，投放到專門的「廢棄藥物檢收」櫃檯或回收桶中 🧪",
-                        "把藥水倒在花盆的泥土裡，當作天然的肥料來滋養盆栽 🌳"
-                    ],
-                    r: [
-                        "過期藥水絕對會變質、滋生細菌，喝下去會造成嚴重的肝腎中毒，千萬不能再喝！",
-                        "絕對不行！藥水隨便倒入馬桶沖走，藥物成分會進入下水道，毒死水中的魚蝦並嚴重污染地下水。",
-                        "完全正確！🌟 課本第50頁特別畫出了「廢棄藥物檢收」櫃檯，將廢藥交給藥局處理才能保護環境。",
-                        "藥物含有複合化學成分，不是植物的有機肥料，倒進土壤裡會毒死植物和土壤中的益蟲喔。"
-                    ],
-                    h: "找一找課本第50頁的處方箋櫃檯旁邊，有一位阿姨拿著針筒和藥水，正在請藥局幫忙做什麼？",
-                    c: 2
-                },
-                {
-                    q: "14. 爺爺想要購買一瓶用來保養骨骼與牙齒健康發育的「鈣片」，這種類型的保健品在購買上有何特點？",
-                    o: [
-                        "因為這不屬於處方藥品，民眾可以不需醫師處方箋，直接前往藥局諮詢並購買 🛒",
-                        "屬於高度危險管制藥品，必須要由大醫院的主任醫生開立證明，否則藥局賣了會被罰錢 📜",
-                        "小學生的身體還沒有發育完全，如果擅自去藥局買鈣片來看會被當作犯法行為 🚨",
-                        "必須要打電話給衛生福利部部長，拿到中央政府發放的「買鈣片許可證」才能買 ☎️"
-                    ],
-                    r: [
-                        "完全正確！🌟 課本第51頁提到鈣片這類保健用品屬於「非處方藥品供應」，民眾可以直接自行選購。",
-                        "鈣片只是補充礦物質的保健食品或非處方品，並非管制麻醉藥品，不需要主任醫生開立特殊證明。",
-                        "小學生在日常生活中也是可以適量補充鈣質的，去藥局幫家人選購或詢問是合法的優良健康行為。",
-                        "衛福部長主要負責宏觀的國家衛生政策，購買一般的非處方藥品是不需要驚動部長核准的。"
-                    ],
-                    h: "看看課本第51頁，高血壓藥物需要處方箋，但是下方的「鈣片」和「頭痛藥」是寫著「非處方藥品供應」？",
-                    c: 0
-                },
-                {
-                    q: "15. 「這是我上個月在醫院買的頭痛藥，現在又有點頭痛，還可以拿出來繼續吃嗎？」當家人有這個疑問時，可以利用社區藥局的哪項功能？",
-                    o: [
-                        "直接在藥局門口當場試吃一顆，如果五分鐘內頭不痛了就代表還可以吃 😋",
-                        "善用藥局的「用藥諮詢」服務，直接帶著藥袋去請教櫃檯的專業藥師 🗣️",
-                        "把藥丸泡在熱開水裡觀察，只要它能夠完全融化，就代表藥效沒有過期 ☕",
-                        "在網路上發文請網友投票，看大家覺得可不可以吃，聽從票數最多的決定 👍"
-                    ],
-                    r: [
-                        "藥局絕對沒有提供藥物當場試吃的服務！亂吃過期或不對症的藥物是非常危險的行為。",
-                        "完全正確！🌟 課本第51頁右下角指出，對剩餘藥物用法有疑問時，可以前往藥局進行專業的用藥諮詢。",
-                        "藥丸能不能融化只是物理崩解現象，完全無法用來判斷裡面的化學藥效是否已經變質或過期喔。",
-                        "網路上的網友通常不具備真正的醫學與藥學證照，聽信網友的瞎猜投票會嚴重危害生命健康。"
-                    ],
-                    h: "解開對藥物的疑問、請教藥物是否還能服用的行為，課本稱之為「用藥○○」服務。",
-                    c: 1
-                },
-                {
-                    q: "16. 假日時阿倫陪媽媽走進社區藥局，裡面有許多工作人員。要如何在一群人中正確認出誰才是具備國家執照的「專業藥師」？",
-                    o: [
-                        "看誰手上手錶戴得最貴、講話最大聲、衣服穿得最華麗 💎",
-                        "認明穿著整潔「白袍」，並且胸前配戴有國家核發「藥師證」的人員 🥼",
-                        "看誰戴著遮陽草帽、穿著圍裙，手上拿著掃把正在努力清理地面 🧹",
-                        "看誰胸前掛著聽診器、手上拿著鋼筆，正在準備幫病人寫生病診斷書 🩺"
-                    ],
-                    r: [
-                        "服裝華麗和講話大聲只能代表個人生活習慣，與有沒有通過國家醫學考試拿到執照完全無關。",
-                        "完全正確！🌟 課本第52頁左上角明確指出：穿著白袍並配戴藥師證的就是藥師，這才是合法的醫療人員。",
-                        "清理地面的人可能是藥局的行政助理或清潔人員，並不具備幫大眾調劑藥品與發藥的專業資格。",
-                        "掛聽診器、幫病人做生病診斷並開立診斷書的是「醫師」的工作，藥師在藥局是不會幫你看病診斷的。"
-                    ],
-                    h: "打開課本第52頁，左上角有一隻小熊指著櫃檯的人說，穿著什麼顏色的袍子並配戴藥師證的就是藥師？",
-                    c: 1
-                },
-                {
-                    q: "17. 街上的連鎖藥妝店和西藥房非常多，我們要怎麼幫外公確認哪一間才是可以拿處方箋去領藥的「健保特約藥局」？",
-                    o: [
-                        "看那家藥局的招牌是不是用純金做的，而且門口有擺放夾娃娃機 🕹️",
-                        "認明藥局外面或招牌上，是否有掛著雙手環抱愛心的「全民健康保險」藍色標誌 💳",
-                        "看店門口的跑馬燈有沒有閃爍著「保證吃了絕對不會再生病」的廣告字樣 ✨",
-                        "只要那家藥局的名稱裡面有寫「開得很大間」或是「有很多連鎖店」的就是 🏠"
-                    ],
-                    r: [
-                        "夾娃娃機和金招牌都只是商業裝飾，超商或遊戲場也有，不能代表它有和國家健保局簽約喔。",
-                        "完全正確！🌟 課本第52頁中間畫出了一個綠色雙人抱愛心的「全民健康保險」藍色標誌，這才是特約藥局的證明！",
-                        "寫著「吃了保證不生病」通常是不實的誇大醫療廣告，真正的健保特約藥局必須認明官方的健保愛心標誌。",
-                        "店開得很大間或是連鎖店多，只代表資金雄厚，並不等於它就是具備受理處方箋資格的健保特約機構。"
-                    ],
-                    h: "那是一個圓形、藍色底、中間畫著兩個綠色的小人手牽手，組合成一顆愛心形狀的國家經典標誌！",
-                    c: 1
-                },
-                {
-                    q: "18. 社區藥師除了留在店裡配藥，他們還時常發揮愛心走入社區，義務幫阿公阿嬤們舉辦哪些對健康有益的活動？",
-                    o: [
-                        "舉辦社區大型「如何成為手機線上網路遊戲高手」的電競爭霸大賽 🎮",
-                        "主辦「反毒、戒菸」等遠離有害成癮物質的健康安全宣導講座 🚭",
-                        "開班免費教授居民如何看手相、抽籤、算命以及預測明天的彩券號碼 🔮",
-                        "舉辦「看誰一分鐘內能吞下最多顆大漢堡」的趣味暴飲暴食比賽 🍔"
-                    ],
-                    r: [
-                        "打電動不是藥師的醫療專業，而且藥師更提倡小朋友和長輩多去戶外運動、保護視力與身體健康。",
-                        "完全正確！🌟 課本第52頁右上角明確寫道：社區藥師還時常舉辦反毒、戒菸講座，是社區健康的守護者。",
-                        "藥師接受的是高等科學與醫學教育，絕對不會在藥局或社區提倡迷信或幫居民算命喔。",
-                        "暴飲暴食會對腸胃和心血管造成嚴重的急性傷害，身為健康守護者的藥師是絕對不會舉辦這種不良活動的。"
-                    ],
-                    h: "想一想，有哪兩種對身體危害極大、會讓人上癮的壞東西（一個是毒品、一個是香菸），藥師會努力辦講座叫大家不要碰？",
-                    c: 1
-                },
-                {
-                    q: "19. 對於社區裡那些生病、行動不便、或者因坐輪椅無法自己出門領藥的獨居長輩，社區藥師會提供什麼貼心的服務？",
-                    o: [
-                        "在電話中告訴長輩如果自己不走過來拿藥，就把他的藥物直接全部沒收 🗣️",
-                        "隨便把藥包塞給放學路過藥局門口的陌生小學生，叫小學生幫忙順便帶過去 🎒",
-                        "利用空閒時間，提供溫馨的「送藥到家」服務，並親自到府指導長輩正確用藥 🛵",
-                        "叫長輩自己花大錢去僱用專業的私人直升機，把藥物空運到他的頂樓 🚁"
-                    ],
-                    r: [
-                        "這樣太冷漠殘忍了，這絕對不是社區藥局作為「民眾好鄰居」所傳遞的社區守護者溫暖精神。",
-                        "藥物是受到嚴格管制的專業醫療用品，絕對不能隨便交給陌生小學生，萬一弄丟或被誤食會造成嚴重中毒事故！",
-                        "完全正確！🌟 課本第52頁右下角畫出親切的藥師騎著摩托車，為不便出門的民眾提供「送藥到家」的貼心服務。",
-                        "這個建議完全不切實際且花費巨大，弱勢長輩根本無法負擔，不符合便民服務的宗旨。"
-                    ],
-                    h: "看一看課本第52頁右下角的插圖，有一位戴著安全帽、騎著紅色摩托車的藥師，正在執行什麼便民工作？",
-                    c: 2
-                },
-                {
-                    q: "20. 麥麥的媽媽想要知道住家周邊到底有哪些健保特約藥局，你可以建議她上網利用哪一個政府官方網站查詢最精準？",
-                    o: [
-                        "上網到當地的美食與旅遊討論區，看哪一家藥局賣的零食小點心評價最高 💻",
-                        "利用官方的「衛生福利部中央健康保險署特約醫事機構查詢」網站系統 🌐",
-                        "翻開農民曆的最後一頁，查看今天出門往哪一個幸運的地理方位走能遇到藥局 📅",
-                        "在各大社交平台搜尋「全台灣最帥、最漂亮藥師選拔大賽」的網路投票粉絲專頁 👑"
-                    ],
-                    r: [
-                        "美食旅遊網站是討論吃喝玩樂的，那上面的評價完全不能用來判定藥局有沒有國家的健保特約資格喔。",
-                        "完全正確！🌟 課本第52頁最下方的充電站明確教導大家，可以利用健保署的特約醫事機構查詢網站了解住家附近有沒有特約藥局。",
-                        "農民曆是傳統的民俗曆法，找尋現代化的健保醫療特約機構，必須使用政府官方的網路查詢工具才正確。",
-                        "藥師的外表帥氣或漂亮與藥局是不是健保特約、調劑藥品是否安全，完全沒有任何醫學上的關聯。"
-                    ],
-                    h: "瞧瞧課本第52頁最下方的「充電站」，政府有一個專門管全民健康保險的機關叫作「中央健康保險○」！",
-                    c: 1
-                },
-                {
-                    q: "21. 假日時妹妹和阿倫在門前玩耍，妹妹騎腳踏車不小心跌倒，膝蓋大面積擦傷。這時家裡剛好沒有生理食鹽水，最適當的做法是？",
-                    o: [
-                        "直接去廚房拿高鹽分的醬油或黑醋塗在傷口上，聽長輩說這樣可以消炎 🫙",
-                        "請爸爸陪同，一起前往附近的社區藥局購買急救必備的無菌生理食鹽水與紗布包紮 🏪",
-                        "要求妹妹把眼淚擦乾、原地忍耐，等到下個星期一上學再去學校找健康中心護理師 🏫",
-                        "拿路邊澆花用的水管對著傷口猛沖，然後用路邊的黑泥土把傷口糊起來防止流血 🌳"
-                    ],
-                    r: [
-                        "絕對不行！醬油或醋含有大量細菌與高濃度鹽分，塗在傷口上不只會痛到爆炸，還會引發嚴重的潰爛與細菌感染！",
-                        "完全正確！🌟 課本第54頁提到妹妹跌倒膝蓋擦傷，阿倫立刻和爸爸一起去社區藥局買生理食鹽水，展現藥局的多元便民功能。",
-                        "擦傷的傷口必須立刻進行清潔與消毒，如果放任髒污在傷口上殘留好幾天，會引發嚴重的發炎、化膿甚至蜂窩性組織炎！",
-                        "泥土裡含有大量的破傷風桿菌和其他致命病毒，用泥土糊傷口等於把大量的細菌直接送進流血的身體裡，非常危險！"
-                    ],
-                    h: "社區藥局就在我們住家附近，它是我們生活中的好鄰居，當家裡缺乏急急護理用品時，可以去那裡買到什麼呢？",
-                    c: 1
-                },
-                {
-                    q: "22. 課本第53頁中，阿倫畫了一張美麗的地圖。本單元建議小朋友和家人在假日一起動手畫什麼，能讓全家人在需要時快速派上用場？",
-                    o: [
-                        "畫一張從家裡出發、可以沿路買到限量冰淇淋與雞蛋糕的「下午茶秘密捷徑地圖」 🍦",
-                        "和家人一起仔細調查並繪製一張自家的「社區藥局地圖」 🗺️",
-                        "畫一張充滿神祕寶藏、相傳埋藏在後山深處的海盜藏寶圖 🏴‍潮",
-                        "畫一張精美的火箭太空梭飛往火星探索外星人的宇宙航線圖 🚀"
-                    ],
-                    r: [
-                        "下午茶地圖雖然很有趣，但對於生病要拿處方箋領藥，或是遇到緊急受傷需要急救用品時，是完全沒有任何幫助的喔。",
-                        "完全正確！🌟 透過和家人一起繪製社區藥局地圖，能讓全家人清楚掌握附近健康守護者的精準位置、電話與便民服務！",
-                        "海盜藏寶圖只是好玩的虛構想像遊戲，但課本希望我們學會的是關乎真實生活健康與社區醫療資源的實用地圖。",
-                        "宇宙航線圖跟我們目前的生活太過遙遠了，我們應該先腳踏實地，熟悉自己居住社區周邊的醫療防線與好鄰居在哪裡。"
-                    ],
-                    h: "畫出這個地圖，可以讓爸爸媽媽和自己都知道，離家最近、掛有健保標誌的藥局在哪一條路上、叫什麼名字喔！",
-                    c: 1
-                },
-                {
-                    q: "23. 在課本最後第55頁的「活力存摺」中，哪一項是小學生在完整學完本單元後，在生活裡「應該具備」的健康素養能力？",
-                    o: [
-                        "我能自己在房間裡用各種化學藥水，調配出一種吃了就絕對不會感冒的超級神仙藥 🧪",
-                        "我能說出社區藥局三種以上的便民服務，並能找到自家附近的社區藥局位置 🌟",
-                        "我學會了如何幫隔壁生病的阿姨聽心跳、拿針筒幫她打針，甚至幫她開刀 🩺",
-                        "我已經成功在夜市擺攤，把自己在網路偏方上學到的神奇頭痛止痛粉賣給路過的人 💸"
-                    ],
-                    r: [
-                        "研發藥物需要頂尖的醫學科學家在無菌實驗室經過多年實驗，小學生絕對不能、也不該在房間亂配藥水，那會中毒的！",
-                        "完全正確！🌟 知道藥局的便民服務（領慢箋、諮詢、回收廢藥、買物資）並知道位置，就是課本要求的滿分健康能力！",
-                        "聽診、打針、開刀是醫師與護理師的法定專業執照工作，不具備資格的人隨便幫人打針看病是嚴重的犯法醫療行為。",
-                        "在夜市私自販售沒有藥物許可證的自配藥粉，屬於販賣偽藥的嚴重違法刑事犯罪，會被警察叔叔抓走並判刑喔！"
-                    ],
-                    h: "快打開課本第55頁的「活力存摺」檢查項目，看看上方的「我能...」後面寫了什麼最貼近我們的能力？",
-                    c: 1
-                },
-                {
-                    q: "24. 媽媽因為最近流感流行，想要去附近的健保藥局買「防疫醫療口罩」以及「消毒酒精」。這屬於社區藥局提供的哪項便民功能？",
-                    o: [
-                        "供應非處方藥品與醫療防疫物資的服務功能 😷",
-                        "提供免費播放熱門電影以及卡拉OK唱歌點播的社區娛樂功能 🎤",
-                        "幫忙兼職安親班、幫忙照顧沒寫完功課的小朋友的托育功能 📝",
-                        "幫忙代售國內外飛機票、高鐵票以及高級豪華郵輪船票的旅行社功能 🎫"
-                    ],
-                    r: [
-                        "完全正確！🌟 醫療口罩、消毒酒精、OK蹦、紗布等日常護理與防疫物資，都是社區藥局為大眾準備的健康防線用品。",
-                        "藥局是安靜、乾淨的專業醫療調劑與給藥場所，依法是絕對不會提供唱歌跳舞或大放電影的娛樂活動的喔。",
-                        "藥師需要全神貫注核對處方箋、精準配藥以防吃錯藥，是絕對沒有辦法在藥局幫忙看管小朋友或輔導寫作業的。",
-                        "買車票機票請找旅行社、超商或車站櫃檯，藥局只專注在居民的健康守護與醫藥、護理用品的供應。"
-                    ],
-                    h: "口罩跟酒精都是在生病流行期間，用來保護我們不被細菌和病毒傳染的重要「醫療防疫防護物資」喔！",
-                    c: 0
-                },
-                {
-                    q: "25. 綜合本單元所有重要的課程，當我們遇到身體不舒服需要就醫，或者在網路上看到驚人的醫藥訊息時，最核心的黃金金句是什麼？",
-                    o: [
-                        "生病時只要一直瘋狂喝開水跟吞鈣片就會自動痊癒，一輩子都不需要去看合格的醫生 🥛",
-                        "就醫用藥找合格醫師及藥師，善用社區藥局功能，確認訊息正確性最重要 💖",
-                        "上網發文問不認識的網友，看哪一個網路偏方得到的『愛心讚數』最多，就照著那個偏方亂吃藥 👍",
-                        "只要同班同學拍胸脯保證吃了很有效的感冒藥，就算藥丸沒有包裝 and 名字，也一定要拿過來吞下去 👥"
-                    ],
-                    r: [
-                        "日常保健（多喝水、補鈣）確實很好，但當身體真正生病不舒服時，仍必須交由合格的醫生進行診斷、對症下藥才安全！",
-                        "完全正確！🌟 這就是本單元的靈魂核心！就醫用藥找專業、面對網路醫藥訊息懂查證，讓社區藥局成為我們真正的健康好鄰居！",
-                        "網友的讚數是可以花錢買出來的假數據，不能代表醫學上的安全與正確，聽信偏方亂吃往往會造成嚴重的肝腎傷害。",
-                        "同學並不是醫學專家，亂吞同學給的成分不明、來路不明的藥丸，非常容易引發嚴重的藥物不良過敏反應或中毒危險！"
-                    ],
-                    h: "這是最後的終極大魔王關卡囉！把課本第43頁最重要、最響亮、寫在最上方的兩行大標題認真讀出來吧！",
-                    c: 1
-                }
-            ];
-
-            let currentIdx = 0;
-            let scoreGems = 0;
-            let isAnswered = false;
-
-            const currentQuestEl = document.getElementById('current-quest');
-            const scoreGemsEl = document.getElementById('score-gems');
-            const questionTextEl = document.getElementById('question-text');
-            const optionsContainerEl = document.getElementById('options-container');
-            const feedbackAreaEl = document.getElementById('feedback-area');
-            const nextQuestBtn = document.getElementById('next-quest-btn');
-            
-            const quizViewEl = document.getElementById('quiz-view');
-            const summaryViewEl = document.getElementById('summary-view');
-            const finalScoreDisplayEl = document.getElementById('final-score-display');
-            const finalCheerEl = document.getElementById('final-cheer');
-            const performanceEvalEl = document.getElementById('performance-eval');
-            const restartGameBtn = document.getElementById('restart-game-btn');
-
-            const correctCheers = [
-                "哇！你好棒！🎉 成功贏得大寶石 💎！",
-                "完全正確！🌟 你的健康用藥知識太扎實了！",
-                "太優秀了！💖 藥丸小隊為你高聲歡呼！",
-                "一級棒！🥳 網路假偏方和誘答題完全騙不倒你！",
-                "超厲害！👍 你就是用藥就醫停看聽的智慧小達人！"
-            ];
-
-            const wrongCheers = [
-                "沒關係，再試一次看看！😊 看完下方解析能學得更快喔！",
-                "差一點點，加油！💪 藥丸小隊會一直陪著你學習！",
-                "這題的誘答選項很有挑戰性！💡 我們看看正確解析，吸取經驗！",
-                "沒關係，失敗是成功的媽媽，下一關你一定能順利通過！✨"
-            ];
-
-            function startAdventure() {
-                currentIdx = 0;
-                scoreGems = 0;
-                isAnswered = false;
-                
-                quizViewEl.style.display = 'block';
-                summaryViewEl.style.display = 'none';
-                
-                refreshStatus();
-                displayStage();
-            }
-
-            function refreshStatus() {
-                currentQuestEl.textContent = currentIdx + 1;
-                scoreGemsEl.textContent = `💎 ${scoreGems}`;
-            }
-
-            function displayStage() {
-                isAnswered = false;
-                nextQuestBtn.style.display = 'none';
-                optionsContainerEl.innerHTML = '';
-                
-                const stage = quizData[currentIdx];
-                questionTextEl.textContent = stage.q;
-                
-                feedbackAreaEl.innerHTML = `<div class="hint-text" id="hint-display"></div>`;
-                document.getElementById('hint-display').textContent = `💡 思考小提示：${stage.h}`;
-
-                for (let i = 0; i < stage.o.length; i++) {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.innerHTML = `<span style="margin-right:8px; font-weight:bold; color:var(--gold-color);">${String.fromCharCode(65 + i)}.</span> ${stage.o[i]}`;
-                    
-                    btn.onclick = function() {
-                        triggerAnswer(i, btn);
-                    };
-                    
-                    optionsContainerEl.appendChild(btn);
-                }
-            }
-
-            function triggerAnswer(userPick, clickedBtn) {
-                if (isAnswered) return;
-                isAnswered = true;
-
-                const stage = quizData[currentIdx];
-                const btnList = optionsContainerEl.querySelectorAll('.option-btn');
-                
-                for (let k = 0; k < btnList.length; k++) {
-                    btnList[k].disabled = true;
-                }
-
-                if (userPick === stage.c) {
-                    clickedBtn.classList.add('correct');
-                    clickedBtn.classList.add('animate-correct');
-                    scoreGems += 10;
-                    scoreGemsEl.textContent = `💎 ${scoreGems}`;
-                    
-                    const cheer = correctCheers[Math.floor(Math.random() * correctCheers.length)];
-                    feedbackAreaEl.innerHTML = `
-                        <div class="result-message" style="color:#81C784;">${cheer} ✅</div>
-                        <div class="rationale-text">🎯 <b>正確醫藥觀念：</b>${stage.r[userPick]}</div>
-                    `;
-                    createFireworks(12);
-                } else {
-                    clickedBtn.classList.add('wrong');
-                    btnList[stage.c].classList.add('correct');
-                    
-                    const sadCheer = wrongCheers[Math.floor(Math.random() * wrongCheers.length)];
-                    feedbackAreaEl.innerHTML = `
-                        <div class="result-message" style="color:#FF8A65;">${sadCheer}</div>
-                        <div class="rationale-text" style="border-left: 3px solid var(--wrong-color); padding-left:8px;">
-                            ❌ <b>你選的這個選項盲點：</b>${stage.r[userPick]}<br><br>
-                            🎯 <b>課本正確觀念核心：</b>${stage.r[stage.c]}
-                        </div>
-                    `;
-                }
-
-                nextQuestBtn.style.display = 'inline-block';
-            }
-
-            nextQuestBtn.onclick = function() {
-                currentIdx++;
-                if (currentIdx < quizData.length) {
-                    refreshStatus();
-                    displayStage();
-                } else {
-                    showFinalDashboard();
-                }
-            };
-
-            function showFinalDashboard() {
-                quizViewEl.style.display = 'none';
-                summaryViewEl.style.display = 'block';
-                
-                finalScoreDisplayEl.textContent = `獲得寶石總數：💎 ${scoreGems} / 250 顆大寶石！`;
-                
-                if (scoreGems >= 220) {
-                    finalCheerEl.textContent = `哇！太不可思議了！🎉 你通過了所有超高難度的生活誘答考驗，網路醫藥假訊息和偏方完全考不倒你！`;
-                    performanceEvalEl.textContent = `🏅 最終榮譽頭銜：【用藥安全核心大導師 🪄💖】`;
-                } else if (scoreGems >= 150) {
-                    finalCheerEl.textContent = `做得很棒喔！💪 你已經成功避開了大部分的生活用藥盲點，快去把正確觀念分享給爸爸媽媽吧！`;
-                    performanceEvalEl.textContent = `🏅 最終榮譽頭銜：【社區特約藥局守護小騎士 🛡️】`;
-                } else {
-                    finalCheerEl.textContent = `完成了25關大冒險，非常有毅力！😊 只要平時多複習課本的『疹破痛紅腫燒』口訣，你也會變得更厲害！`;
-                    performanceEvalEl.textContent = `🏅 最終榮譽頭銜：【努力學習的藥丸小隊實習生 💊】`;
-                }
-
-                createFireworks(65);
-            }
-
-            restartGameBtn.onclick = function() {
-                startAdventure();
-            };
-
-            function createFireworks(num) {
-                const holder = document.getElementById('particle-container');
-                const colors = ['#D4AF37', '#FF6B81', '#4EA8DE', '#4CAF50', '#FF9F43', '#FFFFFF'];
-                
-                for (let i = 0; i < num; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'confetti';
-                    dot.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    dot.style.left = (Math.random() * 100) + 'vw';
-                    dot.style.top = '-2vh';
-                    
-                    const size = (Math.random() * 7) + 5;
-                    dot.style.width = size + 'px';
-                    dot.style.height = size + 'px';
-                    
-                    dot.style.animationDuration = ((Math.random() * 1.8) + 1.2) + 's';
-                    dot.style.animationDelay = (Math.random() * 0.3) + 's';
-                    
-                    holder.appendChild(dot);
-                    
-                    setTimeout(() => {
-                        dot.remove();
-                    }, 3000);
-                }
-            }
-
-            startAdventure();
+            loadQuestion();
         });
+
+        function loadQuestion() {
+            hasAnswered = false;
+            btnNext.style.display = 'none';
+            
+            feedbackText.textContent = "💡 請仔細閱讀題目與四個選項，選出最適當的答案。";
+            feedbackText.style.color = "var(--gold-color)";
+            feedbackHint.textContent = "";
+
+            const currentData = quizData[currentQIndex];
+            
+            progressText.textContent = '題目進度: ' + (currentQIndex + 1) + ' / ' + quizData.length + ' 📝';
+            scoreText.innerHTML = '目前得分: <span class="gem-score">⭐ ' + scoreGems + '</span>';
+            qTag.textContent = currentData.tag;
+            qText.textContent = currentData.question;
+
+            optionsContainer.innerHTML = '';
+            currentData.options.forEach((option, idx) => {
+                const button = document.createElement('button');
+                button.classList.add('option-btn');
+                
+                const badge = document.createElement('span');
+                badge.classList.add('option-badge');
+                badge.textContent = String.fromCharCode(65 + idx);
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = option;
+                
+                button.appendChild(badge);
+                button.appendChild(textSpan);
+                
+                button.onclick = function() { checkAnswer(idx, button); };
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex, clickedButton) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+
+            const currentData = quizData[currentQIndex];
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+
+            allButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === currentData.correct) {
+                clickedButton.classList.add('correct-choice');
+                scoreGems += 4; 
+                scoreText.innerHTML = '目前得分: <span class="gem-score">⭐ ' + scoreGems + '</span>';
+                
+                feedbackText.textContent = "✅ 完全正確！核心衛教知識掌握得非常好！";
+                feedbackText.style.color = "#2ECC71";
+            } else {
+                clickedButton.classList.add('wrong-choice');
+                allButtons[currentData.correct].classList.add('correct-choice');
+                
+                feedbackText.textContent = '❌ 答案錯誤。正確答案為 (' + String.fromCharCode(65 + currentData.correct) + ')。';
+                feedbackText.style.color = "#FF6B81";
+                feedbackHint.textContent = '💡 課本核心指引：' + currentData.hint;
+            }
+
+            if (currentQIndex === quizData.length - 1) {
+                btnNext.textContent = "✨ 觀看綜合學習評量報告";
+            } else {
+                btnNext.textContent = "➡️ 下一題";
+            }
+            btnNext.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < quizData.length - 1) {
+                currentQIndex++;
+                loadQuestion();
+            } else {
+                showCompleteScreen();
+            }
+        }
+
+        function showCompleteScreen() {
+            quizBox.style.display = 'none';
+            completeBox.style.display = 'flex';
+
+            let evaluation = "";
+            if (scoreGems === 100) {
+                evaluation = "🏆 表現極致完美！你獲得了【100分頂尖健康守護神】榮譽！你對單元四的所有垃圾分類、登革熱傳染病、病媒蚊特徵與巡倒刷清口訣有著毫無漏洞的完美理解，表現令人讚賞！";
+            } else if (scoreGems >= 80) {
+                evaluation = "🥇 表現非常優秀！你獲得了【社區防疫大隊長】榮譽！你已完全具備正確的居家防蚊常識與社區環保觀念，是守護健康環境的楷模！";
+            } else if (scoreGems >= 60) {
+                evaluation = "🥈 挑戰通過！你獲得了【健康守護小尖兵】榮譽！你已經達到了健體單元的及格評量標準，對於核心的防疫政策有了正確的認知，繼續保持！";
+            } else {
+                evaluation = "🧱 挑戰完成，仍需努力。你目前是【健康衛教實習生】。建議重新閱讀課本第 56 到 67 頁，特別加強記憶登革熱的症狀與『巡、倒、刷、清』的執行細節，下次一定能拿到好成績！";
+            }
+
+            reportDetails.innerHTML = '';
+            
+            const p1 = document.createElement('p');
+            p1.style.fontSize = '1.3rem';
+            p1.style.color = 'var(--gold-color)';
+            p1.style.marginBottom = '15px';
+            p1.style.textAlign = 'center';
+            p1.style.fontWeight = 'bold';
+            p1.textContent = '🎉 25題核心衛教綜合評量結束 🎉';
+            
+            const p2 = document.createElement('p');
+            p2.style.marginBottom = '15px';
+            p2.style.textAlign = 'center';
+            p2.style.fontSize = '1.2rem';
+            p2.innerHTML = '測驗最終總得分：<span class="gem-score" style="font-size:1.5rem; font-weight:bold;">⭐ ' + scoreGems + ' 分</span>';
+            
+            const p3 = document.createElement('p');
+            p3.style.color = '#FFFFFF';
+            p3.style.lineHeight = '1.7';
+            p3.style.background = 'rgba(255,255,255,0.05)';
+            p3.style.padding = '18px';
+            p3.style.borderRadius = '12px';
+            p3.style.border = '1px solid var(--gold-color)';
+            p3.style.textAlign = 'justify';
+            p3.textContent = evaluation;
+            
+            const p4 = document.createElement('p');
+            p4.style.marginTop = '20px';
+            p4.style.fontSize = '0.95rem';
+            p4.style.color = '#BBB';
+            p4.style.textAlign = 'center';
+            p4.style.fontStyle = 'italic';
+            p4.textContent = '「垃圾分類做得好，蟲鼠疾病不來找。巡倒刷清做得對，登革熱病毒全擊潰！」 🛡️🌱';
+            
+            reportDetails.appendChild(p1);
+            reportDetails.appendChild(p2);
+            reportDetails.appendChild(p3);
+            reportDetails.appendChild(p4);
+
+            triggerConfetti();
+        }
+
+        function triggerConfetti() {
+            const colors = ['#FF6B81', '#2ECC71', '#3498DB', '#D4AF37', '#E67E22', '#9B59B6'];
+            for (let i = 0; i < 100; i++) {
+                const p = document.createElement('div');
+                p.classList.add('confetti');
+                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = -20 - (Math.random() * 20) + 'px';
+                
+                const size = Math.random() * 8 + 5;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                
+                const duration = Math.random() * 2.5 + 1.5;
+                p.style.animationDuration = duration + 's';
+                p.style.animationDelay = Math.random() * 0.8 + 's';
+
+                document.body.appendChild(p);
+                removeAfterDelay(p, (duration + 1) * 1000);
+            }
+        }
+
+        function removeAfterDelay(el, delay) {
+            setTimeout(() => { el.remove(); }, delay);
+        }
+
+        function restartGame() {
+            currentQIndex = 0;
+            scoreGems = 0;
+            completeBox.style.display = 'none';
+            quizBox.style.display = 'block';
+            loadQuestion();
+        }
     </script>
 </body>
 </html>
