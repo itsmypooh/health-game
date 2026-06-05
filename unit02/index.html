@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>火場生存與急救大冒險 🚒🔥</title>
+    <style>
+        /* 核心魔法可愛風格：黑、金、白與柔和點綴色 */
+        :root {
+            --bg-color: #181818;
+            --primary-gold: #D4AF37;
+            --light-gold: #F3E5AB;
+            --text-white: #FFFFFF;
+            --card-bg: #2A2A2A;
+            --btn-hover: #3E3E3E;
+            --correct-green: #2ECC71;
+            --wrong-red: #E74C3C;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 30px;
+            box-sizing: border-box;
+            border: 2px solid var(--primary-gold);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary-gold);
+            text-align: center;
+            font-size: 1.8rem;
+            margin-top: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* 頂部進度條與資訊 */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-gold);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #444;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-gold), #FFF);
+            transition: width 0.3s ease;
+        }
+
+        /* 題目區域 */
+        .question-box {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            min-height: 70px;
+        }
+
+        /* 選項按鈕 */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: #333;
+            color: var(--text-white);
+            border: 1px solid #555;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--btn-hover);
+            border-color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        /* 答題回饋效果 */
+        .option-btn.correct-ans {
+            background-color: var(--correct-green) !important;
+            border-color: var(--correct-green) !important;
+            color: #fff;
+        }
+
+        .option-btn.wrong-ans {
+            background-color: var(--wrong-red) !important;
+            border-color: var(--wrong-red) !important;
+            color: #fff;
+        }
+
+        /* 提示與回饋面板 */
+        .feedback-panel {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed var(--primary-gold);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback-text {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .rationale-text {
+            font-size: 0.95rem;
+            color: #DDD;
+            line-height: 1.5;
+        }
+
+        .next-btn, .restart-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-gold), #B8860B);
+            color: black;
+            font-weight: bold;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(212,175,55,0.3);
+            transition: all 0.2s ease;
+        }
+
+        .next-btn:hover, .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(212,175,55,0.5);
+        }
+
+        .hint-toggle {
+            background: none;
+            border: none;
+            color: var(--primary-gold);
+            cursor: pointer;
+            font-size: 0.95rem;
+            text-decoration: underline;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        .hint-box {
+            display: none;
+            background: #222;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--light-gold);
+            margin-top: 5px;
+            border-left: 3px solid var(--primary-gold);
+        }
+
+        /* 華麗動畫特效 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-correct {
+            animation: popStars 0.5s ease;
+        }
+
+        @keyframes popStars {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); box-shadow: 0 0 20px var(--correct-green); }
+            100% { transform: scale(1); }
+        }
+
+        /* 慶祝彩色碎紙粒子效果容器 */
+        .confetti-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 99;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #f00;
+            opacity: 0;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+        }
+
+        /* 結算頁面 */
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .star-rating {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="gameWindow">
+        <div id="confettiContainer" class="confetti-container"></div>
+        
+        <div id="quizScreen">
+            <h1>🚒 火場生存與急救大冒險 🧠</h1>
+            
+            <div class="hud">
+                <div>進度: <span id="currentQNum">1</span> / 25</div>
+                <div>得分: <span id="scoreBadge">⭐ 0</span></div>
+            </div>
+            
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="question-box" id="questionText">載入問題中...</div>
+            
+            <div class="options-container" id="optionsBox">
+                </div>
+
+            <button class="hint-toggle" id="hintToggleBtn" onclick="toggleHint()">💡 需要魔法提示嗎？</button>
+            <div class="hint-box" id="hintBox"></div>
+
+            <div class="feedback-panel" id="feedbackPanel">
+                <div class="feedback-text" id="feedbackTitle"></div>
+                <div class="rationale-text" id="feedbackRationale"></div>
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()">➡️ 下一關進發！</button>
+            </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h1>🎉 冒險完成！魔法結算 🎉</h1>
+            <div class="star-rating" id="starRating">⭐⭐⭐</div>
+            <p style="font-size: 1.3rem; margin: 15px 0;" id="finalScoreText"></p>
+            <p style="color: var(--light-gold); line-height: 1.6;" id="evaluationText"></p>
+            <button class="restart-btn" onclick="resetGame()">🔄 重新挑戰新冒險</button>
+        </div>
+    </div>
+
+    <script>
+        // 25題經過隨機分配正確答案位置的高誘答性題目庫（答案已徹底打散在不同索引位置）
+        const questionDatabase = [
+            {
+                question: "當行走在路上發現自家公寓高樓層不幸失火，第一時間最正確且安全的應變步驟順序為何？",
+                answerOptions: [
+                    { text: "迅速自行搭乘電梯回火場確認受困家人人數，再打119報案", isCorrect: false, rationale: "火災時搭乘電梯極易因斷電受困，且會延誤報案時機，造成更嚴重死傷。" },
+                    { text: "大聲向周邊鄰居示警喊失火，同時立刻撥打119向消防局精確報案", isCorrect: true, rationale: "先大聲示警能爭取鄰居逃生黃金時間，並立即報案能讓消防隊儘早出動撲滅火源。" },
+                    { text: "為了不打擾鄰居，先安靜地用手機上網查詢起火大樓的精確通訊地址", isCorrect: false, rationale: "隱瞞火訊會使周邊鄰居錯失逃生先機，且報案應以口頭快速說明已知地標為主。" },
+                    { text: "立刻衝進火場通道維持巷道暢通，以便等一下消防車能直接開進去", isCorrect: false, rationale: "未經裝備防護切勿盲目衝入火場，維持通道應在安全處協助或引導，而非冒險涉入。" }
+                ],
+                hint: "考量生命安全第一，且必須兼顧自身防護與大眾預警的順序。"
+            },
+            {
+                question: "在撥打119火災報案時，哪一項資訊在程序上是消防局最核心需要優先得知、絕不能漏掉的？",
+                answerOptions: [
+                    { text: "報案人目前的行動電話號碼與詳細通訊錄", isCorrect: false, rationale: "姓名與電話雖需報上，但非最首要的核心救援部署指標，地點錯誤則完全無法救援。" },
+                    { text: "起火點屋主的個人基本資料與財產估計損失", isCorrect: false, rationale: "火災當下財產損失非救災急迫資訊，首要任務是救人與控管火勢。" },
+                    { text: "現場圍觀群眾的確切人數與交通工具類型", isCorrect: false, rationale: "圍觀人數與交通工具與滅火、搜救受困者無直接關聯。" },
+                    { text: "起火點的精確地點與樓層", isCorrect: true, rationale: "精確地點與樓層能讓消防人員第一時間派遣正確分隊與適當高度的雲梯車進行救援。" }
+                ],
+                hint: "消防車出動時，他們最需要知道「要把車開去哪裡」以及「多高的梯子才夠」。"
+            },
+            {
+                question: "消防車抵達火災現場時，身為附近居民或逃生出來的當事人，下列哪一項行為最能實際協助救災？",
+                answerOptions: [
+                    { text: "主動保持消防通道暢通，並前往巷口引導消防車進入，且確認受困人數告知消防員", isCorrect: true, rationale: "保持通道與精確回報人數可讓消防員迅速展開特搜，避免盲目搜索延誤時機。" },
+                    { text: "留在火場最前線近距離圍觀，以便隨時幫忙消防員拉住強力噴水高壓水帶", isCorrect: false, rationale: "圍觀群眾會妨礙救災動線，且高壓水帶具有強大後座力，非專業人員極易受傷。" },
+                    { text: "迅速將自家的汽車或機車移到阻擋巷道的違規車輛前方攔截它", isCorrect: false, rationale: "這會造成巷道更嚴重的死結與堵塞，應配合協助移走堵塞車輛而非增加路障。" },
+                    { text: "不顧勸阻立即獨自衝進去火場搜救，以展現互助美德", isCorrect: false, rationale: "無裝備進入只會讓自己成為新的受困者，反而加重消防人員的搜救負擔。" }
+                ],
+                hint: "思考如何提供清晰資訊，並避免阻礙專業人員的救災動線。"
+            },
+            {
+                question: "火災現場常常有人因為好奇而圍觀。關於「圍觀火災現場」所造成的危害，下列敘述何者最精確？",
+                answerOptions: [
+                    { text: "主要是因為圍觀會干擾消防員的心理專注度，使其無法精準操作滅火器具", isCorrect: false, rationale: "消防員皆受過專業抗壓訓練，圍觀實質危害主要是空間受阻與群眾人身安全暴露危險。" },
+                    { text: "會堵塞逃生動線與消防車進出通道，且可能因火場突發爆炸或濃煙擴散而受傷", isCorrect: true, rationale: "群眾聚集會妨礙救災車輛，火場也隨時有閃燃、爆裂物或有毒濃煙侵襲的風險。" },
+                    { text: "會導致報案專線119因現場干擾而產生音訊斷訊的電磁問題", isCorrect: false, rationale: "人群聚集不會導致基地台斷訊，兩者無直接因果關係。" },
+                    { text: "會增加現場醫護人員幫忙包紮傷口的困難度，因為圍觀者會搶奪紗布", isCorrect: false, rationale: "圍觀者通常不會搶奪物資，其主要危害是阻礙交通與自身安全威脅。" }
+                ],
+                hint: "從實體空間阻礙與動態火場環境的突發危險性去思考。"
+            },
+            {
+                question: "救災過程中，消防人員特別強調必須「確認家中有幾個人受困」，其主要的核心考量是什麼？",
+                answerOptions: [
+                    { text: "為了填寫內政部消防署的救災行政報表與保險理賠核算", isCorrect: false, rationale: "現場搜救以拯救人命為唯一急迫目標，行政報表與保險均為事後處理。" },
+                    { text: "用來判定這場火災的嚴重等級，決定是否需要向鄰近國家申請跨國援助", isCorrect: false, rationale: "地方火災的人數確認是為了前線搜救，與跨國援助等級無關。" },
+                    { text: "以便調派正確數量的特搜隊員進行精準搜救，避免盲目搜索與資源虛耗", isCorrect: true, rationale: "得知確切受困人數與位置能讓搜救方針更明確，大幅提升救出受困者的成功率。" },
+                    { text: "為了計算需要派發多少個防煙面罩給現場圍觀的民眾", isCorrect: false, rationale: "防煙面罩是給受困者及消防員使用，非發放給圍觀民眾。" }
+                ],
+                hint: "在黃金搜救時間內，時間與人力都是有限的，資訊必須精準。"
+            },
+            {
+                question: "在火場求生中，若不幸遭遇身上衣物著火，根據「停、躺、滾」三大安全步驟，下列動作何者完全正確？",
+                answerOptions: [
+                    { text: "迅速快速奔跑，希望藉由迎面而來的強風將身上的火焰吹熄", isCorrect: false, rationale: "奔跑會帶入大量新鮮氧氣，引發空氣助燃，反而使火勢更加劇烈燃燒。" },
+                    { text: "立即用脫下的鞋子或雙手掌用力拍打身體著火處，試圖將火源拍滅", isCorrect: false, rationale: "用手拍打極易導致雙手嚴重燒燙傷，增加身體受創面積。" },
+                    { text: "立刻就地躺下，用雙手摀住臉部，在地面左右翻滾直到火勢熄滅", isCorrect: true, rationale: "躺下能防火焰燒向面部，翻滾可隔絕空氣滅火，雙手摀臉能降低顏面傷殘機率。" },
+                    { text: "維持站立姿勢，並將雙手平貼在大腿上，靜止不動等待消防隊救援", isCorrect: false, rationale: "站立會使火焰順著衣物向上燃燒，迅速灼傷呼吸道與頭部，非常危險。" }
+                ],
+                hint: "奔跑會帶進更多氧氣；而火焰的特性是向上燃燒，所以姿勢與遮蔽面部很重要。"
+            },
+            {
+                question: "在執行「停、躺、滾」的翻滾動作時，為什麼「越貼近地面翻滾」滅火效果越好？",
+                answerOptions: [
+                    { text: "因為地面的溫度通常比空氣高，可以把火源逆向吸乾", isCorrect: false, rationale: "地面溫度一般較低，但其滅火原理是隔絕空氣而非熱量吸附。" },
+                    { text: "因為能更有效地阻絕空氣，達到窒息法的滅火效果", isCorrect: true, rationale: "身體緊貼地面能有效壓迫著火點，隔絕燃燒所需的氧氣，使火勢熄滅。" },
+                    { text: "因為地面含有微量的抗燃化學元素，能自動抑制火焰分子", isCorrect: false, rationale: "普通地面並不含有化學滅火劑，純粹是物理隔絕空氣的機制。" },
+                    { text: "因為貼近地面翻滾可以產生微小的局部真空重力場", isCorrect: false, rationale: "翻滾無法改變或產生重力場，這不符合物理常識。" }
+                ],
+                hint: "燃燒需要三要素：可燃物、助燃物（氧氣）、熱源。翻滾是切斷哪一個？"
+            },
+            {
+                question: "根據統計，住宅廚房是房子裡最容易發生火災的高風險場所。下列哪一項是廚房火災最主要成因？",
+                answerOptions: [
+                    { text: "抽油煙機因為定期清洗得太乾淨，導致電線短路", isCorrect: false, rationale: "抽油煙機累積過多油垢才是引燃的風險，清洗乾淨能有效降低火災機率。" },
+                    { text: "廚房使用的不鏽鋼鍋具在加熱時釋放出可燃性氣體", isCorrect: false, rationale: "合格的不鏽鋼鍋具在正常加熱下不會釋放可燃性氣體。" },
+                    { text: "烹煮食物時人離開卻未關閉爐火，導致乾燒或油鍋起火", isCorrect: true, rationale: "「人離火未熄」是廚房火災的第一大主因，極易導致鍋具燒焦並引燃周邊可燃物。" },
+                    { text: "洗碗機在運作過程中因為大量微波產生高溫紅外線而自燃", isCorrect: false, rationale: "洗碗機不使用微波原理，這屬於錯誤的電器認知。" }
+                ],
+                hint: "謹記「人離火熄」的黃金生活安全原則。"
+            },
+            {
+                question: "當家人正在廚房烹煮湯麵，此時客廳的電話突然響起，下列哪一種作法最符合「防災安全意識」？",
+                answerOptions: [
+                    { text: "直接跑去客廳接電話，心想湯麵剛放下去煮，一定不會有事", isCorrect: false, rationale: "許多廚房火災皆因「講電話講太久忘記時間」而引發乾燒。" },
+                    { text: "先關閉爐火，確認火熄滅後，再去客廳接聽電話", isCorrect: true, rationale: "遵循「人離火熄」原則，即便只是離開幾分鐘，也必須先關火以防萬一。" },
+                    { text: "大聲叫客廳的貓咪去幫忙接電話，自己一邊看著爐火", isCorrect: false, rationale: "寵物並無操作電器或接聽電話的能力，此行為無法解決問題。" },
+                    { text: "把爐火開到最大讓它快點滾，自己迅速跑去接電話再跑回來", isCorrect: false, rationale: "加大火力會加速湯汁溢出或燒乾，極度危險，會大幅提高火災機率。" }
+                ],
+                hint: "火災往往發生在「以為離開一下下沒關係」的疏忽瞬間。"
+            },
+            {
+                question: "如果發現家中有年幼的成員因為好奇而拿打火機、火柴等點火器具當玩具玩耍，第一時間該如何處理？",
+                answerOptions: [
+                    { text: "在旁邊仔細觀察，只要他沒有燒到窗簾，就可以培養他的科學探索心", isCorrect: false, rationale: "兒童缺乏對火勢失控的應變能力，在旁縱容極易釀成無法挽回的慘劇。" },
+                    { text: "跟他一起玩，並教導他如何精準點燃紙張以策安全", isCorrect: false, rationale: "主動教導、縱容兒童玩火嚴重違反健體安全規範。" },
+                    { text: "立即撥打119請消防隊派一輛消防車到家裡進行全天候待命監控", isCorrect: false, rationale: "這屬於濫用消防資源，應由照顧者第一時間制止並進行管制。" },
+                    { text: "立即制止並收走點火器具，嚴肅告知玩火的危害與嚴重性，並讓大人知道", isCorrect: true, rationale: "必須馬上切斷危險源，並進行安全教育，嚴禁兒童接觸管制性點火器具。" }
+                ],
+                hint: "點火器具在家庭管理中屬於必須嚴格管制的危險物品，不能當成玩具。"
+            },
+            {
+                question: "清明節隨同家人前往郊區掃墓，在燒完紙錢之後，下列哪一個動作是確保「不引發山林火災」的關鍵？",
+                answerOptions: [
+                    { text: "確實用水澆熄所有殘餘灰燼與火種，確認完全冷卻、無煙後才離開現場", isCorrect: true, rationale: "殘留火種極易隨風復燃引發山火，必須藉由冷卻法（澆水）確保完全熄滅。" },
+                    { text: "看到表面沒有明顯的大火焰，就可以安心地直接收拾東西離開", isCorrect: false, rationale: "底層的微小殘餘火種常常在風勢助長下復燃，不能只看表面。" },
+                    { text: "用枯枝和乾草將灰燼就地掩埋蓋住，使其與陽光隔絕", isCorrect: false, rationale: "用枯枝乾草覆蓋反而提供了更多可燃物，一旦內部高溫引燃會一發不可收拾。" },
+                    { text: "在灰燼旁放置一瓶未開封的礦泉水，讓大自然在需要時自動融化它", isCorrect: false, rationale: "未開封的水瓶無法自動滅火，這不具備實質的防災功能。" }
+                ],
+                hint: "風吹容易讓埋藏在灰燼底下的隱形火種重新燃燒。"
+            },
+            {
+                question: "冬季寒流來襲，家中同時使用電暖器、電磁爐與微波爐等高耗電電器。下列哪種插座接線方式最安全？",
+                answerOptions: [
+                    { text: "全部集中插在同一條具備多孔的延長線上，以便一鍵同時關閉總開關", isCorrect: false, rationale: "多個高耗電電器共用一條延長線會使電流過載，極易燒毀外皮引發電氣火災。" },
+                    { text: "各個高耗電電器分別插在獨立的單一牆面固定插座上，避免過載", isCorrect: true, rationale: "耗電量大的電器應避免共用線路，以免電流超過負荷導致電線發熱短路。" },
+                    { text: "將所有電器的電線緊緊綑綁綑紮在一起，以減少電阻與發熱面積", isCorrect: false, rationale: "綑綁電線會導致內部熱量無法散發，加速絕緣外皮熔化，引發短路起火。" },
+                    { text: "為了省電，將插頭積滿灰塵的電暖器直接插在潮濕的浴室插座上", isCorrect: false, rationale: "積塵會導致積污導電（插頭短路），潮濕環境更會大幅增加漏電與火災風險。" }
+                ],
+                hint: "高耗電電器的電流極大，如果擠在同一個流通管道（導線）會產生高熱。"
+            },
+            {
+                question: "關於電線與插座的日常維護保養，下列哪一項敘述是正確的「防災安全知識」？",
+                answerOptions: [
+                    { text: "為了收納美觀，應將較長的高耗電延長線緊密綑綁固定起來使用", isCorrect: false, rationale: "綑綁會蓄積熱量，導致絕緣層熔化而短路，是常見的起火原因。" },
+                    { text: "不常用的電器插頭應該永遠插在插座上，以維持電路隨時暢通", isCorrect: false, rationale: "長期不拔且未清理的插頭易積塵潮濕，引發微弱導電發熱而自燃。" },
+                    { text: "插頭與插座應定期清潔灰塵，若發現電線外皮受損應立即更換新線", isCorrect: true, rationale: "定期清潔可避免積污導電，更換受損電線能防止漏電與短路。" },
+                    { text: "若插座發生微弱火花，可以用濕抹布用力按壓來吸收過剩的電流", isCorrect: false, rationale: "水分會導電，用濕抹布觸碰有電火花的插座會引發嚴重觸電危險。" }
+                ],
+                hint: "絕緣外皮是保護電流不外洩的關鍵；灰塵與水分則是引導電流走錯路的幫兇。"
+            },
+            {
+                question: "在規畫「家庭逃生計畫」時，平面圖上應確保居家各樓層至少規畫幾個不同方向的逃生路線？",
+                answerOptions: [
+                    { text: "嚴格限制只能有一條絕對路線，以免家人逃生時走散", isCorrect: false, rationale: "單一路線一旦被起火點堵死，內部人員將完全失去逃生機會，淪為死局。" },
+                    { text: "兩個或兩個以上方向的逃生路線", isCorrect: true, rationale: "雙向以上的逃生動線能確保當主要出入口不幸被火舌或濃煙阻斷時，仍有替代路線可逃生。" },
+                    { text: "不需要事先規畫方向，發生火災時跟著直覺衝刺即可", isCorrect: false, rationale: "火場充滿濃煙與恐慌，沒有事先規畫演練，盲目亂衝極易誤入死胡同或高熱區。" },
+                    { text: "一律規畫往頂樓加蓋鐵窗的方向逃生作為唯一解", isCorrect: false, rationale: "頂樓若無安全出口或被上鎖，極易讓人受困於高熱濃煙中，且鐵窗會阻礙搜救。" }
+                ],
+                hint: "如果主要的門口燒起來了，你還能從哪裡出去？分散風險是關鍵。"
+            },
+            {
+                question: "家庭逃生計畫中，「定期演練」是不可或缺的環節。根據課本建議，應每隔多久與家人共同演練一次？",
+                answerOptions: [
+                    { text: "每十年演練一次即可，因為格局很少變動", isCorrect: false, rationale: "時間過長會讓人遺忘細節，且家中堆積物可能改變，必須定期複習。" },
+                    { text: "每六個月（半年）演練一次", isCorrect: true, rationale: "每半年定期演練能讓全家人（尤其是兒童與長者）大腦與身體保持對逃生動線的肌肉記憶。" },
+                    { text: "每當消防車從家門口路過時就立刻演練一次", isCorrect: false, rationale: "消防車路過屬於隨機事件且頻率不定，防災應是有計畫性的定期安排。" },
+                    { text: "只需要在買新房子的當天演練一次，之後不需再演練", isCorrect: false, rationale: "防災習慣需要持續強化，單次演練無法應對長年後的突發恐慌。" }
+                ],
+                hint: "維持記憶需要定期複習，這個週期位在半年一次最合適。"
+            },
+            {
+                question: "火災發生時，在推開房門逃生前，必須先透過「摸門把」與「觀察門縫」來做判斷。下列求生邏輯何者正確？",
+                answerOptions: [
+                    { text: "若門把發燙或門縫冒出濃煙，代表門外火勢極大且逼近，此時絕對不可開門", isCorrect: true, rationale: "門把發燙代表外側已是高溫赤熱區，開門會讓高熱與毒煙瞬間湧入房內致死。" },
+                    { text: "若門把發燙，應立刻用冷水潑濕身體，然後一口氣用力推開門衝過去", isCorrect: false, rationale: "高熱濃煙的吸入性灼傷只需一秒就能讓人窒息昏迷，潑水無法防護呼吸道。" },
+                    { text: "若門縫沒有煙，代表門外絕對安全，可以閉著眼睛直接往外狂奔", isCorrect: false, rationale: "仍需小心試開門確認，不可盲目狂奔，隨時要注意動態火情。" },
+                    { text: "門把發燙代表外面正在退火，是絕佳的逃生衝刺時機", isCorrect: false, rationale: "發燙代表熱源極近，而非退火，這是完全錯誤的物理常識。" }
+                ],
+                hint: "門把和門縫是房間內探測外面是不是已經變成「地獄高熱區」的天然感測器。"
+            },
+            {
+                question: "當確認房門外佈滿高溫有毒濃煙，且門把發燙無法開門逃生時，躲在下列哪一個避難空間是錯誤且極度危險的？",
+                answerOptions: [
+                    { text: "具備對外窗、遠離起火點、且能關緊木門阻絕濃煙的乾淨臥室", isCorrect: false, rationale: "實木門能暫時阻擋煙霧，有對外窗可維持呼吸與向外呼救，是較佳的相對避難點。" },
+                    { text: "能關緊房門、確認房內無蓄煙，且有陽台可退避呼救的獨立房間", isCorrect: false, rationale: "關門阻煙、退守陽台開窗呼救，是無法下樓逃生時的正確求生守則。" },
+                    { text: "沒有對外窗、門板為塑膠材質的浴室", isCorrect: true, rationale: "浴室塑膠門遇高熱易熔化，且排水孔多無新鮮空氣，躲入極易因濃煙嗆傷窒息。" },
+                    { text: "離火、熱、煙最遠，且有堅固木質門板阻隔的獨立書房", isCorrect: false, rationale: "只要能關門塞縫、阻絕濃煙並對外呼救，皆優於躲入易熔化的塑膠浴室。" }
+                ],
+                hint: "很多人的誤解是浴室有水可以滅火，但卻忽略了門板材質耐熱度與濃煙侵襲的速度。"
+            },
+            {
+                question: "在火場求生中，常有人誤以為「用塑膠袋套住頭部」可以防煙。關於這個行為，下列敘述何者完全正確？",
+                answerOptions: [
+                    { text: "這是非常推薦的做法，只要在塑膠袋底部多戳幾個大洞維持通風即可", isCorrect: false, rationale: "戳洞會讓有毒濃煙直接吸入，不戳洞則會快速耗盡內部氧氣窒息，完全無用。" },
+                    { text: "只有在塑膠袋內裝滿冰塊時，才能發揮防毒面罩的功能", isCorrect: false, rationale: "冰塊無法過濾一氧化碳等有毒氣體，且高溫下依然會熔化，不可行。" },
+                    { text: "絕對不可使用，因為塑膠袋遇熱會迅速熔化，反而會緊貼臉部造成嚴重燒燙傷與窒息", isCorrect: true, rationale: "塑膠袋不耐熱，火場高溫會使其縮小熔化，黏附在皮膚上造成無法挽回的二度傷害並阻絕氧氣。" },
+                    { text: "這可以延長在濃煙中奔跑大約三十分鐘的黃金時間", isCorrect: false, rationale: "塑膠袋容量有限，內含空氣幾秒內就會耗盡，且無法抵抗火場高溫。" }
+                ],
+                hint: "想像一下塑膠材質遇到高熱時會發生什麼物理變化？它會融化並具有高度黏著性。"
+            },
+            {
+                question: "若房門打開後確認「沒有濃煙、門把不燙」，且符合向下逃生條件，為什麼求生守則強調「一律要往下逃生，絕不往上跑」？",
+                answerOptions: [
+                    { text: "因為消防隊的雲梯車高度被法令限制，只能拯救三樓以下的受困者", isCorrect: false, rationale: "雲梯車有不同高度規格，不往上跑的主因是煙霧上升的物理特性危險，而非車輛限制。" },
+                    { text: "因為濃煙上升速度極快，越往上走煙霧越濃、溫度也越高，極易在樓梯間遇難", isCorrect: true, rationale: "煙霧具備煙囪效應，上升速度遠快於人走路，往上跑無異於迎面衝向高熱濃煙區。" },
+                    { text: "因為往上跑會導致地心引力變大，消耗過多體力", isCorrect: false, rationale: "地心引力在同一棟樓層間的微小差距對體力消耗毫無影響，此敘述非科學主因。" },
+                    { text: "因為頂樓通常住著凶猛的頂樓加蓋看門犬，會阻礙逃生", isCorrect: false, rationale: "這非普遍防災科學考量，核心主因是濃煙流體力學與高熱蓄積。" }
+                ],
+                hint: "熱空氣與濃煙的移動方向是往哪裡？人的腳程跟煙上升的速度誰比較快？"
+            },
+            {
+                question: "在沿著樓梯向下逃生離開房間時，順手「把身後的房門關上（關門）」這一個小動作，具有什麼關鍵性的防護作用？",
+                answerOptions: [
+                    { text: "主要是為了防止屋內的貴重財產在混亂中被小偷趁機入室盜竊", isCorrect: false, rationale: "火災當下以人命防護為核心，關門的科學作用是局限火煙，非防盜。" },
+                    { text: "為了保持走廊的冷氣空調不會外洩，節約能源", isCorrect: false, rationale: "火災時不考慮空調節能問題，此選項嚴重脫離現實情境。" },
+                    { text: "能有效將火勢與濃煙局限在該房間內，延緩毒煙擴散到公共樓梯間的時間", isCorrect: true, rationale: "隨手關門能切斷空氣對流，將煙霧鎖在起火室內，為自己與鄰居爭取更多安全的下樓時間。" },
+                    { text: "這樣做可以觸發大樓的自動灑水系統感應器", isCorrect: false, rationale: "關門不會觸發灑水感應，灑水器是由溫度達到特定熔點時才會被動啟動。" }
+                ],
+                hint: "空氣流通會助長火勢；門是一道物理屏障，可以阻擋煙霧外洩。"
+            },
+            {
+                question: "如果家中的窗戶為了防盜而加裝了「防盜鐵窗」，在日常防災整備上必須特別注意哪項安全設計？",
+                answerOptions: [
+                    { text: "鐵窗應使用高壓電流永久通電，以防止火災時外人攀爬入內", isCorrect: false, rationale: "通電鐵窗會電擊逃生者與施救的消防員，造成極度危險的二次災難。" },
+                    { text: "應該用最強固的焊接技術將鐵窗全焊接死，絕對不能留下任何開口", isCorrect: false, rationale: "全焊死的鐵窗在火災時會變成死牢，消防隊需要花費大量時間破壞，嚴重耽誤黃金搜救時機。" },
+                    { text: "鑰匙應該埋藏在地基深處，只有屋主一人知道暗號", isCorrect: false, rationale: "這會導致緊急狀況時完全找不到鑰匙，失去預留逃生口的原意。" },
+                    { text: "鐵窗必須預留逃生口，且若有上鎖，應讓全家人都知道鑰匙固定放置處", isCorrect: true, rationale: "留有逃生口且鑰匙位置透明，才能確保火災發生時不會因為鐵窗阻隔而無法逃生或獲救。" }
+                ],
+                hint: "鐵窗在防盜的同時，絕對不能變成緊急火災時阻斷人命逃生的自製牢籠。"
+            },
+            {
+                question: "關於「住宅用火災警報器（住警器）」的安裝與維護，下列哪一項敘述是完全正確的？",
+                answerOptions: [
+                    { text: "因為功能強大，不論任何場所一律隨機混合安裝即可，不需區分功能", isCorrect: false, rationale: "錯誤的安裝（如廚房裝偵煙式）會導致日常做飯時頻繁誤報，讓人想拔掉電池，失去防災作用。" },
+                    { text: "廚房應安裝「定溫式」住警器，而房間、樓梯及客廳則適合安裝「偵煙式」", isCorrect: true, rationale: "廚房平時烹飪有油煙，若裝偵煙式易誤報，故裝定溫式；其餘場所裝偵煙式可及早感知煙霧。" },
+                    { text: "住警器必須連接全棟大樓的高壓變壓器電線才能運作，不能使用一般電池", isCorrect: false, rationale: "住警器多為獨立式設計，內建電池，不需裝配複雜電線，安裝方便安全。" },
+                    { text: "安裝後就永久有效，未來數十年內完全不需要進行任何測試或按鈕檢查", isCorrect: false, rationale: "應定期（每個月1次或外出3天以上時）測試開關，確保電池有電與功能正常。" }
+                ],
+                hint: "廚房煮飯本來就會產生煙霧，如果用「看煙霧」的警報器會不會天天亂叫？"
+            },
+            {
+                question: "使用經過消防署認證的滅火器時，必須熟記操作口訣。請問下列哪一組口訣與對應動作完全相符？",
+                answerOptions: [
+                    { text: "拉（拉長噴射距離）-> 瞄（瞄準天空濃煙）-> 壓（用力壓扁瓶身）-> 掃（掃開周邊雜物）", isCorrect: false, rationale: "操作動作完全錯誤，瞄準天空濃煙無法滅火，瓶身亦無法壓扁。" },
+                    { text: "拉（拉開安全插梢）-> 瞄（瞄向火源底部）-> 壓（壓握把噴出）-> 掃（左右移動掃射）", isCorrect: true, rationale: "「拉、瞄、壓、掃」為標準滅火器操作四步驟，瞄準底部才能有效切斷燃燒基底。" },
+                    { text: "瞄（先瞄準火源頂端）-> 拉（用力拉斷噴管）-> 掃（原地大範圍掃地）-> 壓（壓低身體防止跌倒）", isCorrect: false, rationale: "順序與動作皆錯，滅火必須先拉插梢，且須瞄準火源底部而非頂端。" },
+                    { text: "拉（拉起警報器開關）-> 壓（壓住傷口止血）-> 瞄（瞄準鏡頭拍照）-> 掃（掃描QR碼報案）", isCorrect: false, rationale: "這完全脫離了滅火器的實際操作程序，屬於混淆選項。" }
+                ],
+                hint: "第一個動作一定是解除安全鎖（插梢），接著要對準火的根部（底部）噴射。"
+            },
+            {
+                question: "當家中成員不幸發生皮膚燒燙傷時，在送醫前必須執行急救5步驟。請選出正確的步驟順序：",
+                answerOptions: [
+                    { text: "脫（先扯掉黏住的衣服）-> 沖（高壓水柱沖刷）-> 蓋（厚棉過度保護）-> 泡（泡熱水）-> 送（趕快送醫）", isCorrect: false, rationale: "硬扯衣物會撕裂受損皮膚，泡熱水會加劇熱傷，皆是嚴重錯誤行為。" },
+                    { text: "沖（沖水15~30分）-> 脫（小心除去衣物）-> 泡（持續泡冷水）-> 蓋（乾淨紗布覆蓋）-> 送（趕快送醫）", isCorrect: true, rationale: "標準「沖、脫、泡、蓋、送」流程能有效降低皮膚深層熱傷害、防止感染並及時就醫。" },
+                    { text: "沖（沖洗傷口）-> 蓋（塗抹厚重牙膏覆蓋）-> 脫（脫掉鞋子）-> 泡（浸泡鹽水）-> 送（不予就醫）", isCorrect: false, rationale: "塗牙膏或泡鹽水會刺激傷口並引發嚴重感染，屬於民間錯誤偏方。" },
+                    { text: "送（直接抬起傷者送醫）-> 沖（到醫院再沖熱水）-> 脫（在救護車上強行撕開外衣）", isCorrect: false, rationale: "未在第一時間沖冷水降溫會使熱能持續灼傷深層組織，強行撕開外衣會擴大傷口。" }
+                ],
+                hint: "第一步一定是先用流動的冷水幫滾燙的皮膚「降溫」，也就是「沖」。"
+            },
+            {
+                question: "在處理燒燙傷的過程中，下列哪一項行為是科學上公認「正確」且「能防止傷口感染」的照顧作法？",
+                answerOptions: [
+                    { text: "發現衣服與傷口焦黑黏在一起時，務必使出最大力氣將衣服硬扯分開", isCorrect: false, rationale: "硬扯會將未分離的皮膚一併撕下，造成嚴重的二次大面積創傷。" },
+                    { text: "立刻在傷口上塗抹厚厚一層牙膏或醬油，利用清涼感來達到化學消炎效果", isCorrect: false, rationale: "牙膏與醬油會蓄積熱量且含有細菌，會干擾醫師診斷並大幅提高感染率。" },
+                    { text: "保持燙傷產生的水泡完整、絕對不可故意弄破，且不隨意塗抹未經醫囑的偏方或外用藥", isCorrect: true, rationale: "水泡表皮是天然的無菌保護層，弄破或亂塗偏方（如牙膏、萬金油）極易引發細菌感染與組織壞死。" },
+                    { text: "將傷口浸泡在高度濃縮的鹽水或酒精中，進行高強度的強制殺菌", isCorrect: false, rationale: "高濃度鹽水或酒精會對裸露的真皮組織造成劇烈脫水與化學灼傷，破壞細胞再生。" }
+                ],
+                hint: "皮膚受傷後非常脆弱。不要亂擦廚房或浴室裡不是藥品的東西，保護身體自然的保護水泡。"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // 啟動魔法遊戲
+        function initGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('quizScreen').style.display = 'block';
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('scoreBadge').innerText = `⭐ 0`;
+            showQuestion();
+        }
+
+        // 渲染題目與選項
+        function showQuestion() {
+            // 重置提示與回饋面板
+            document.getElementById('feedbackPanel').style.display = 'none';
+            document.getElementById('hintBox').style.display = 'none';
+            document.getElementById('hintBox').innerText = '';
+            document.getElementById('hintToggleBtn').style.display = 'block';
+            
+            const currentQ = questionDatabase[currentQuestionIndex];
+            
+            // 更新進度條與文字
+            document.getElementById('currentQNum').innerText = currentQuestionIndex + 1;
+            const progressPercent = ((currentQuestionIndex) / 25) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+            
+            document.getElementById('questionText').innerText = `【第 ${currentQuestionIndex + 1} 關】${currentQ.question}`;
+            
+            // 渲染選項
+            const optionsBox = document.getElementById('optionsBox');
+            optionsBox.innerHTML = '';
+            
+            currentQ.answerOptions.forEach((option, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = option.text;
+                btn.onclick = () => checkAnswer(idx, btn);
+                optionsBox.appendChild(btn);
+            });
+        }
+
+        // 顯示魔法提示
+        function toggleHint() {
+            const hintBox = document.getElementById('hintBox');
+            if (hintBox.style.display === 'block') {
+                hintBox.style.display = 'none';
+            } else {
+                hintBox.innerText = `💡 魔法提示：${questionDatabase[currentQuestionIndex].hint}`;
+                hintBox.style.display = 'block';
+            }
+        }
+
+        // 檢查答案
+        function checkAnswer(selectedIndex, clickedBtn) {
+            const currentQ = questionDatabase[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            // 禁用所有按鈕，防止重複點擊
+            allButtons.forEach(btn => btn.disabled = true);
+            document.getElementById('hintToggleBtn').style.display = 'none';
+            document.getElementById('hintBox').style.display = 'none';
+
+            const isCorrect = currentQ.answerOptions[selectedIndex].isCorrect;
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackRationale = document.getElementById('feedbackRationale');
+            const gameWindow = document.getElementById('gameWindow');
+
+            if (isCorrect) {
+                score += 4; // 每題4分，總分100
+                document.getElementById('scoreBadge').innerText = `⭐ ${score}`;
+                clickedBtn.classList.add('correct-ans');
+                feedbackTitle.innerHTML = "哇！你好棒！完全正確！🌟💖🎉";
+                feedbackTitle.style.color = "var(--correct-green)";
+                gameWindow.classList.add('animate-correct');
+                setTimeout(() => gameWindow.classList.remove('animate-correct'), 500);
+            } else {
+                clickedBtn.classList.add('wrong-ans');
+                feedbackTitle.innerHTML = "差一點點，加油！我們再看一次觀念！💪💡😊";
+                feedbackTitle.style.color = "var(--primary-gold)";
+                
+                // 高亮顯示正確答案給小朋友學習
+                allButtons.forEach((btn, idx) => {
+                    if (currentQ.answerOptions[idx].isCorrect) {
+                        btn.classList.add('correct-ans');
+                    }
+                });
+            }
+
+            feedbackRationale.innerText = currentQ.answerOptions[selectedIndex].rationale;
+            document.getElementById('feedbackPanel').style.display = 'block';
+        }
+
+        // 進入下一題
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionDatabase.length) {
+                showQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        // 遊戲結束結算
+        function endGame() {
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            document.getElementById('progressBar').style.width = `100%`;
+
+            const finalScoreText = document.getElementById('finalScoreText');
+            const starRating = document.getElementById('starRating');
+            const evaluationText = document.getElementById('evaluationText');
+
+            finalScoreText.innerText = `冒險總得分：${score} 分！`;
+
+            // 華麗彩色碎紙煙火效果
+            triggerConfetti();
+
+            // 依分數給予正向評價與星星
+            if (score === 100) {
+                starRating.innerText = "⭐⭐⭐⭐⭐";
+                evaluationText.innerText = "太完美了！你獲得了『終極火場生存大法師』稱號！👑✨ 你已經完全掌握了所有居家用電、火災報案程序、逃生守則與燒燙傷急救技巧，能夠完美保護自己與家人！💖";
+            } else if (score >= 80) {
+                starRating.innerText = "⭐⭐⭐⭐";
+                evaluationText.innerText = "太厲害了！你獲得了『高級防災小尖兵』徽章！🌟 你的安全意識非常高，只要稍微再注意細微的誘答概念，你就是最棒的防災專家囉！👍";
+            } else if (score >= 60) {
+                starRating.innerText = "⭐⭐⭐";
+                evaluationText.innerText = "恭喜及格！你獲得了『安全守護見習生』稱號！💪 你已經了解基礎的沖脫泡蓋送與逃生觀念，建議可以再重新挑戰一次，讓自己的魔法防護罩變得更堅固喔！😊";
+            } else {
+                starRating.innerText = "⭐";
+                evaluationText.innerText = "這次的冒險雖然有點難度，但沒關係，失敗是成功的基石！😊 每一題選項中的小叮嚀都是珍貴的求生知識，再接再厲，下一趟冒險你一定會大發神威！💪🔥";
+            }
+        }
+
+        // 煙火紙屑粒子生成器
+        function triggerConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            const colors = ['#D4AF37', '#FFFFFF', '#FFD700', '#FF4500', '#32CD32', '#1E90FF'];
+            
+            for (let i = 0; i < 80; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confetti.style.animationDuration = `${1.5 + Math.random() * 2}s`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(confetti);
+            }
+        }
+
+        // 重新開始遊戲
+        function resetGame() {
+            initGame();
+        }
+
+        // 網頁載入完成後啟動遊戲
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+        });
+    </script>
+</body>
+</html>
