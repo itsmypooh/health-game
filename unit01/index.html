@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的成長與健康生活大冒險 🌟🌱</title>
+    <style>
+        /* 核心魔法風格：黑、金、白與柔和點綴色 */
+        :root {
+            --bg-color: #181818;
+            --primary-gold: #D4AF37;
+            --light-gold: #F3E5AB;
+            --text-white: #FFFFFF;
+            --card-bg: #2A2A2A;
+            --btn-hover: #3E3E3E;
+            --correct-green: #2ECC71;
+            --wrong-red: #E74C3C;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 30px;
+            box-sizing: border-box;
+            border: 2px solid var(--primary-gold);
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary-gold);
+            text-align: center;
+            font-size: 1.8rem;
+            margin-top: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* 頂部進度條與資訊 */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-gold);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #444;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-gold), #FFF);
+            transition: width 0.3s ease;
+        }
+
+        /* 題目區域 */
+        .question-box {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            min-height: 70px;
+        }
+
+        /* 選項按鈕 */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: #333;
+            color: var(--text-white);
+            border: 1px solid #555;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--btn-hover);
+            border-color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        /* 答題回饋效果 */
+        .option-btn.correct-ans {
+            background-color: var(--correct-green) !important;
+            border-color: var(--correct-green) !important;
+            color: #fff;
+        }
+
+        .option-btn.wrong-ans {
+            background-color: var(--wrong-red) !important;
+            border-color: var(--wrong-red) !important;
+            color: #fff;
+        }
+
+        /* 提示與回饋面板 */
+        .feedback-panel {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed var(--primary-gold);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback-text {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .rationale-text {
+            font-size: 0.95rem;
+            color: #DDD;
+            line-height: 1.5;
+        }
+
+        .next-btn, .restart-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-gold), #B8860B);
+            color: black;
+            font-weight: bold;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(212,175,55,0.3);
+            transition: all 0.2s ease;
+        }
+
+        .next-btn:hover, .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(212,175,55,0.5);
+        }
+
+        .hint-toggle {
+            background: none;
+            border: none;
+            color: var(--primary-gold);
+            cursor: pointer;
+            font-size: 0.95rem;
+            text-decoration: underline;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        .hint-box {
+            display: none;
+            background: #222;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--light-gold);
+            margin-top: 5px;
+            border-left: 3px solid var(--primary-gold);
+        }
+
+        /* 動畫特效 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-correct {
+            animation: popStars 0.5s ease;
+        }
+
+        @keyframes popStars {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); box-shadow: 0 0 20px var(--correct-green); }
+            100% { transform: scale(1); }
+        }
+
+        /* 慶祝彩色碎紙粒子效果 */
+        .confetti-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 99;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            opacity: 0;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(800px) rotate(360deg); opacity: 0; }
+        }
+
+        /* 結算頁面 */
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .star-rating {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="gameWindow">
+        <div id="confettiContainer" class="confetti-container"></div>
+        
+        <!-- 測驗進行畫面 -->
+        <div id="quizScreen">
+            <h1>🌱 我的成長與健康生活大冒險 🧠</h1>
+            
+            <div class="hud">
+                <div>關卡: <span id="currentQNum">1</span> / 30</div>
+                <div>分數: <span id="scoreBadge">💎 0</span></div>
+            </div>
+            
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="question-box" id="questionText">載入問題中...</div>
+            
+            <div class="options-container" id="optionsBox">
+                <!-- JavaScript 動態置入選項 -->
+            </div>
+
+            <button class="hint-toggle" id="hintToggleBtn" onclick="toggleHint()">💡 需要魔法提示嗎？</button>
+            <div class="hint-box" id="hintBox"></div>
+
+            <div class="feedback-panel" id="feedbackPanel">
+                <div class="feedback-text" id="feedbackTitle"></div>
+                <div class="rationale-text" id="feedbackRationale"></div>
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()">➡️ 下一關進發！</button>
+            </div>
+        </div>
+
+        <!-- 遊戲結算畫面 -->
+        <div class="result-screen" id="resultScreen">
+            <h1>🎉 冒險完成！魔法結算 🎉</h1>
+            <div class="star-rating" id="starRating">⭐⭐⭐</div>
+            <p style="font-size: 1.3rem; margin: 15px 0;" id="finalScoreText"></p>
+            <p style="color: var(--light-gold); line-height: 1.6;" id="evaluationText"></p>
+            <button class="restart-btn" onclick="resetGame()">🔄 重新挑戰新冒險</button>
+        </div>
+    </div>
+
+    <script>
+        // 30題經過精心編排、正確選項完全打散在 0, 1, 2, 3 位置的題庫
+        const questionDatabase = [
+            {
+                question: "開學排隊時，荳荳發現原本和自己排在一起的小辰變得比自己高，而排到了後面。關於這個現象，下列哪一項觀念最正確？",
+                answerOptions: [
+                    { text: "這代表小辰的身體發展很正常，荳荳的生長則完全停止了", isCorrect: false, rationale: "每個人的生長速度不同，即使暫時沒別人高，也不代表生長停止。" },
+                    { text: "每個人的生長速度不同，只要養成良好習慣，就能健康長大", isCorrect: true, rationale: "生長速度具有個別差異，不需過度擔心，維持良好習慣最重要。" },
+                    { text: "琪琪長得特別高，表示琪琪一定是班上最健康、完全不生病的人", isCorrect: false, rationale: "身高與是否生病沒有絕對關係，遺傳和營養才是關鍵因素。" },
+                    { text: "荳荳應該立刻不吃正餐、大量喝含糖飲料來刺激自己快速長高", isCorrect: false, rationale: "含糖飲料和偏食會阻礙生長發育，是錯誤的生活習慣。" }
+                ],
+                hint: "課本提到「每個人的生長速度不同」，不用太擔心。"
+            },
+            {
+                question: "琪琪的身高在班上特別顯眼，琪琪的爸媽長得也很高。琪琪爸媽說這與「遺傳」有關。關於「遺傳」，下列敘述何者正確？",
+                answerOptions: [
+                    { text: "遺傳是指後天透過大量重訓和吃藥改變的身體特徵", isCorrect: false, rationale: "遺傳是天生的，無法透過後天吃藥或運動來改變其基因基礎。" },
+                    { text: "遺傳只會影響個人的膚色與智力，對身高的發展完全沒有任何關聯", isCorrect: false, rationale: "遺傳對身高、外表發育皆有顯著的影響。" },
+                    { text: "遺傳是與生俱來的，無法改變，但我們可以透過後天方法幫助生長發育", isCorrect: true, rationale: "遺傳雖無法改變，但後天的睡眠、運動與營養補給能充分發揮生長潛力。" },
+                    { text: "只要父母長得高，孩子後天不睡覺、不吃東西也一定會長得很高", isCorrect: false, rationale: "後天的生活習慣（睡眠、營養、運動）依然是影響發育的關鍵。" }
+                ],
+                hint: "遺傳是天生的，但後天還有三大關鍵因素可以努力。"
+            },
+            {
+                question: "除了無法改變的遺傳因素之外，下列哪一組因素是我們後天可以努力調整、用來幫助身體良好生長發育的關鍵？",
+                answerOptions: [
+                    { text: "睡眠、運動、營養", isCorrect: true, rationale: "睡眠、規律運動與均衡營養，是打造健康生活與幫助長高的後天三大基石。" },
+                    { text: "零食、看電視、打電動", isCorrect: false, rationale: "這些屬於應適量限制的習慣，過度接觸會危害身體健康與發育。" },
+                    { text: "星座、血型、出生季節", isCorrect: false, rationale: "這些因素與身體的實質生長發育、長高並無科學上的因果關係。" },
+                    { text: "衣服款式、剪指甲頻率、寫字速度", isCorrect: false, rationale: "這些是個人生活習慣與能力展現，與骨骼肌肉的生長發育無關。" }
+                ],
+                hint: "課本封面和內容不斷強調的三大健康生活關鍵。"
+            },
+            {
+                question: "根據課本建議，處於兒童期的國小學生，每天至少需要睡足多少小時才夠？",
+                answerOptions: [
+                    { text: "每天至少睡足 5 小時", isCorrect: false, rationale: "5小時睡眠嚴重不足，會影響生長激素分泌與上課專注度。" },
+                    { text: "每天至少睡足 6 小時", isCorrect: false, rationale: "6小時對正在發育的兒童而言依然不夠，容易導致免疫力下降。" },
+                    { text: "每天至少睡足 8 小時", isCorrect: true, rationale: "課本明確指出，每天至少要睡足 8 小時，才能維持充足的生長與體力回復。" },
+                    { text: "每天必須睡足 15 小時以上", isCorrect: false, rationale: "過度的睡眠會減少正常的運動與活動時間，對發育並無額外好處。" }
+                ],
+                hint: "請看課本第11頁「睡眠」小圖示中的紅字提示。"
+            },
+            {
+                question: "為了促進肌肉與骨骼發育，課本建議兒童每天應該進行多長時間的運動？",
+                answerOptions: [
+                    { text: "每個月固定運動 30 分鐘", isCorrect: false, rationale: "運動頻率太低，無法達到促進發育和鍛鍊體魄的效果。" },
+                    { text: "一天 30 分鐘", isCorrect: true, rationale: "課本第11頁明確建議，每天應規律運動 30 分鐘，以維持身體健康。" },
+                    { text: "每週只需要在假日運動 5 分鐘", isCorrect: false, rationale: "5分鐘的時間無法有效刺激心肺功能與骨骼生長。" },
+                    { text: "每天必須不間斷運動 8 小時以上", isCorrect: false, rationale: "過度運動會造成肌肉與關節嚴重運動傷害，違反健康原則。" }
+                ],
+                hint: "每天持續適度運動，才能幫助骨骼與肌肉健康發育。"
+            },
+            {
+                question: "每個人從出生、長大到變老，會經過好幾個人生階段。請問「嬰幼兒期」一般是指哪一個年齡區間？",
+                answerOptions: [
+                    { text: "7 ~ 12 歲", isCorrect: false, rationale: "7~12歲屬於「兒童期」，此時已進入國小就學階段。" },
+                    { text: "13 ~ 18 歲", isCorrect: false, rationale: "13~18歲屬於「青少年期」，開始注重外表與人際關係。" },
+                    { text: "0 ~ 6 歲", isCorrect: true, rationale: "0~6歲為嬰幼兒期，此階段正在學坐、爬、站、走等基本能力。" },
+                    { text: "19 ~ 64 歲", isCorrect: false, rationale: "19~64歲屬於長期的「成年期」，主要在努力工作與養育小孩。" }
+                ],
+                hint: "這個階段的小寶寶還需要家人全面的照顧，學會基本的爬行與走路。"
+            },
+            {
+                question: "荳荳目前就讀國小三年級，會自己洗碗、做家事，也學會了騎腳踏車和寫字。請問她正處於哪一個人生階段？",
+                answerOptions: [
+                    { text: "兒童期（7 ~ 12 歲）", isCorrect: true, rationale: "兒童期的特徵是學會跳繩、騎腳踏車、做家事，並開始具備照顧自己的能力。" },
+                    { text: "嬰幼兒期（0 ~ 6 歲）", isCorrect: false, rationale: "嬰幼兒期通常還在發展基礎移動能力，尚無法獨立完成洗碗與複雜家事。" },
+                    { text: "青少年期（13 ~ 18 歲）", isCorrect: false, rationale: "青少年期為中學階段，特徵更傾向於重視人際關係與強烈的獨立感。" },
+                    { text: "老年期（65 歲以上）", isCorrect: false, rationale: "老年期身體體力開始衰退，需要家人的陪伴與關心。" }
+                ],
+                hint: "對照自己的年齡與目前在學校學會的技能來做判斷。"
+            },
+            {
+                question: "荳荳的哥哥和姐姐最近變得非常注重外表，特別重視人際關係，也渴望擁有獨立的空間。請問他們處於哪個人生階段？",
+                answerOptions: [
+                    { text: "兒童期", isCorrect: false, rationale: "兒童期較著重於基礎生活能力的提升與常規學習。" },
+                    { text: "成年期", isCorrect: false, rationale: "成年期的核心在於努力工作、養育小孩與維持家庭生活。" },
+                    { text: "老年期", isCorrect: false, rationale: "老年期主要面臨體力衰退，需要家人給予更多關懷與陪伴。" },
+                    { text: "青少年期（13 ~ 18 歲）", isCorrect: true, rationale: "重視人際關係、喜歡獨立、開始注意外表，是青少年期典型的心理與社會發展特徵。" }
+                ],
+                hint: "國中到高中階段的青少年，心理上會展現出獨特的獨立需求。"
+            },
+            {
+                question: "爸爸和媽媽每天努力工作，除了維持家庭生活外，還要養育小孩並照顧年邁的爺爺、奶奶。這符合哪個人生階段的特徵？",
+                answerOptions: [
+                    { text: "成年期（19 ~ 64 歲）", isCorrect: true, rationale: "成年期是家庭與社會的中流砥柱，肩負工作、養育下一代與奉養上一代的責任。" },
+                    { text: "青少年期（13 ~ 18 歲）", isCorrect: false, rationale: "青少年主要身份為學生，尚未承擔養育小孩與維持家庭經濟的責任。" },
+                    { text: "老年期（65 歲以上）", isCorrect: false, rationale: "老年期通常已從職場退休，體力開始衰退，轉為被照顧與陪伴的角色。" },
+                    { text: "嬰幼兒期（0 ~ 6 歲）", isCorrect: false, rationale: "此階段完全需要仰賴家人的養育與悉心照顧。" }
+                ],
+                hint: "這個階段年齡跨度最長，是家中的經濟與照顧核心。"
+            },
+            {
+                question: "爺爺和奶奶最近體力開始衰退，走起路來容易疲累，需要家人更多的陪伴與關心。他們正處於哪個人生階段？",
+                answerOptions: [
+                    { text: "兒童期", isCorrect: false, rationale: "兒童期的體力與運動能力正在蓬勃向上發展，而非衰退。" },
+                    { text: "成年期", isCorrect: false, rationale: "成年期正值壯年，體能相對穩定，主要負責家庭的維持。" },
+                    { text: "老年期（65 歲以上）", isCorrect: true, rationale: "老年期的特徵為生理機能與體力逐漸衰退，需要家庭成員給予心理與生活上的關懷。" },
+                    { text: "青少年期", isCorrect: false, rationale: "青少年期體能正處於高峰發展階段。" }
+                ],
+                hint: "課本提到「65歲以上」，此時需要多加注意骨骼保健與陪伴。"
+            },
+            {
+                question: "嬰幼兒的腸胃容量比較小，無法在正餐時一次吃下太多食物。根據課本飲食建議，應該如何調配其飲食？",
+                answerOptions: [
+                    { text: "在正餐之間可以適當補充點心，如麥片粥、水果泥、水煮蛋", isCorrect: true, rationale: "嬰幼兒採少量多餐原則，正餐間補充營養均衡的點心能提供足夠熱量。" },
+                    { text: "正餐不給他們吃任何東西，只在深夜餵食冰淇淋與糖果", isCorrect: false, rationale: "冰淇淋與糖果缺乏必要營養，且會破壞腸胃健康。" },
+                    { text: "強制他們像成年期一樣，每天只能吃一餐且必須吃全麥大魚大肉", isCorrect: false, rationale: "嬰幼兒消化系統未發育完全，強行餵食大量成人的固體食物會導致消化不良。" },
+                    { text: "正餐之間絕對禁止吃任何東西，就算哭鬧也只能讓他們喝白開水", isCorrect: false, rationale: "這會導致嬰幼兒因攝取熱量不足而影響正常的生長發育。" }
+                ],
+                hint: "參考課本第14頁，嬰幼兒正餐之間適合補充軟質、營養的點心。"
+            },
+            {
+                question: "兒童期的小朋友正處於「長高、換牙」的重要發展時期。為了幫助肌肉、骨骼和牙齒健康發育，應該特別多攝取哪些營養素或食物？",
+                answerOptions: [
+                    { text: "多攝取咖啡因、辣椒與高鹽分的醃漬食品", isCorrect: false, rationale: "這些刺激性與高鹽食品會增加身體負擔，阻礙營養吸收。" },
+                    { text: "多補充鈣質，並多吃豆魚蛋肉類來補充蛋白質", isCorrect: true, rationale: "鈣質是骨骼和牙齒發育的原料，蛋白質則是肌肉生長不可或缺的營養素。" },
+                    { text: "只需要吃高熱量的油炸薯條和巧克力餅乾即可", isCorrect: false, rationale: "油炸與高糖零食無法提供換牙與長高所需的必要鈣質與蛋白質。" },
+                    { text: "完全不吃任何蛋類與肉類，只喝含糖汽水來補充水分", isCorrect: false, rationale: "含糖汽水會加速鈣質流失，對換牙與長高有嚴重的負面影響。" }
+                ],
+                hint: "長高需要堅固的骨骼，換牙需要牙齒健康，這和哪一種礦物質最有關係？"
+            },
+            {
+                question: "課本中針對兒童期推薦了哪些具體的「健康飲食建議」點心或食物組合？",
+                answerOptions: [
+                    { text: "炸雞排、麻辣火鍋、珍珠奶茶", isCorrect: false, rationale: "這些屬於高油、高糖、刺激性食物，不適合依據發育需求推薦。" },
+                    { text: "洋芋片、棉花糖、碳酸飲料", isCorrect: false, rationale: "這類零食缺乏鈣質與優質蛋白質，多吃無益發育。" },
+                    { text: "全麥蛋吐司、小魚乾、起司片", isCorrect: true, rationale: "全麥提供營養，蛋提供蛋白質，小魚乾與起司片富含豐富鈣質，非常適合兒童期。" },
+                    { text: "生魚片、黑咖啡、高纖燕麥能量飲", isCorrect: false, rationale: "生食有細菌感染風險，咖啡因不適合兒童，這非課本建議組合。" }
+                ],
+                hint: "請看課本第14頁「兒童期」字體下方綠色框框中的點心清單。"
+            },
+            {
+                question: "青少年期是身體快速發育的重要時期。為了維持營養均衡並促進血液發育，課本建議要注意多吃深綠色蔬菜與海產類，因為它們含有豐富的哪種營養素？",
+                answerOptions: [
+                    { text: "豐富的鐵質", isCorrect: true, rationale: "深綠色蔬菜（如菠菜）與海產（如蛤蜊）富含鐵質，是維持發育與造血功能的重要元素。" },
+                    { text: "豐富的糖分", isCorrect: false, rationale: "蔬菜與海產的糖分含量極低，這不是攝取它們的主要目的。" },
+                    { text: "高濃度的脂肪", isCorrect: false, rationale: "蔬果與海產屬於低脂或優質脂肪來源，並非高濃度脂肪食品。" },
+                    { text: "防腐劑與人工色素", isCorrect: false, rationale: "天然蔬果與海產不含有人工色素，這不是天然食物的營養成分。" }
+                ],
+                hint: "菠菜和蛤蜊湯常被用來補充哪一種與紅血球相關的微量元素？"
+            },
+            {
+                question: "針對青少年期的健康，課本第15頁的綠色框框特別提出了哪一組「飲食建議」菜單？",
+                answerOptions: [
+                    { text: "洋蔥圈、培根起司堡、巧克力可樂", isCorrect: false, rationale: "這屬於精緻加工高脂食物，不符合課本強調的均衡少油原則。" },
+                    { text: "炒菠菜、葡萄、蛤蜊湯", isCorrect: true, rationale: "炒菠菜與蛤蜊湯富含鐵質與蛋白質，葡萄提供維生素，是絕佳發育期菜單。" },
+                    { text: "炸黑輪、烤香腸、麻辣臭豆腐", isCorrect: false, rationale: "加工食品與重口味醃漬物不符合少鹽少油的健康原則。" },
+                    { text: "花生糖、蜜餞、奶油泡芙", isCorrect: false, rationale: "全屬於高糖、高精緻脂肪的零食類，應減少攝取。" }
+                ],
+                hint: "這份菜單包含了一道蔬菜、一種水果和一碗海鮮湯，含有豐富的鐵質。"
+            },
+            {
+                question: "成年期的爸爸和媽媽為了「保持良好的體態與健康」，在日常飲食選擇上應該遵循下列哪一個核心原則？",
+                answerOptions: [
+                    { text: "選擇「多糖、多鹽、多油炸」的精緻大餐", isCorrect: false, rationale: "三高飲食會導致慢性病與肥胖，違反成年期健康原則。" },
+                    { text: "每天只喝咖啡，不吃任何蔬果與主食", isCorrect: false, rationale: "偏激飲食會引發嚴重的營養不良與腸胃疾病。" },
+                    { text: "選擇「少油炸、少糖、少鹽」的清淡均衡飲食", isCorrect: true, rationale: "「三少」原則能有效減輕身體代謝負擔，預防慢性病並維持良好體態。" },
+                    { text: "三餐完全只吃炸雞，不喝任何開水", isCorrect: false, rationale: "高油且缺乏水分會引發身體嚴重發炎與脫水。" }
+                ],
+                hint: "請看課本第16頁「成年期」橘色區塊中的關鍵引號字體。"
+            },
+            {
+                question: "課本第16頁針對「成年期」的日常健康點心與食品，給予了哪些具體的飲食建議？",
+                answerOptions: [
+                    { text: "低糖優格、毛豆、芭樂", isCorrect: true, rationale: "優格提供乳品營養，毛豆富含植物蛋白與纖維，芭樂則是高維生素低糖水果，符合三少原則。" },
+                    { text: "含糖珍奶、炸薯條、東坡肉", isCorrect: false, rationale: "皆為典型的高油、高糖食物，不符合成年期體態維持需求。" },
+                    { text: "煉乳銀絲卷、巧克力慕斯、洋芋片", isCorrect: false, rationale: "富含精緻澱粉、飽和脂肪與高鹽，應避免作為常態點心。" },
+                    { text: "冰淇淋聖代、香 visual 烤雞皮、可樂", isCorrect: false, rationale: "高飽和脂肪與精緻糖，不利於新陳代謝的健康維持。" }
+                ],
+                hint: "這一組建議包含一種優格、一種豆類以及一種綠皮的高維生素低糖水果。"
+            },
+            {
+                question: "老年期的爺爺和奶奶因為骨骼中的鈣質容易流失、較容易發生骨折。平日飲食中，他們應該多補充富含鈣質的哪些食物？",
+                answerOptions: [
+                    { text: "多攝取辣椒醬、白糖與碳酸飲料", isCorrect: false, rationale: "碳酸飲料會加速骨骼中的鈣質流失，對老年人有害。" },
+                    { text: "多補充含鈣質的乳品、豆類，以及富含纖維質的蔬果", isCorrect: true, rationale: "乳品與豆類能有效健骨，高纖蔬果則能促進因消化變慢而產生的腸胃蠕動。" },
+                    { text: "只吃肥肉和動物內臟，完全不喝牛奶與乳製品", isCorrect: false, rationale: "肥肉內臟飽和脂肪與膽固醇過高，缺乏鈣質，不利老人心血管健康。" },
+                    { text: "為了省事，每天只吃稀飯配醬瓜，不補充任何蛋白質與乳品", isCorrect: false, rationale: "長期單純攝取稀飯配醬瓜會導致蛋白質與鈣質嚴重缺乏，加速肌肉流失與骨質疏鬆。" }
+                ],
+                hint: "老年期需要特別注重「保健骨骼」與「補充纖維質」。"
+            },
+            {
+                question: "老年期因為「咀嚼能力變弱、消化速度變慢、食量減少」，課本建議在食物的料理與烹調上應該注意什麼？",
+                answerOptions: [
+                    { text: "故意將食物炸得非常堅硬、大塊，訓練牙齒硬度", isCorrect: false, rationale: "硬食會破壞微弱的牙齒與假牙，並導致腸胃無法消化。" },
+                    { text: "多提供重口味的麻辣大餐來強行刺激胃酸分泌", isCorrect: false, rationale: "重口味與辛辣物容易引發胃食道逆流與腸胃黏膜受損。" },
+                    { text: "可以吃較軟的食物，並在兩餐之間適當補充營養點心", isCorrect: true, rationale: "質地較軟的食物（如蒸蛋、魚肉）方便咀嚼，少量多餐補充點心可確保熱量足夠。" },
+                    { text: "不進行任何烹調，直接給予未切碎的生硬蔬菜固體", isCorrect: false, rationale: "生硬固體會造成老年人吞嚥困難，甚至引發嗆咳窒息危險。" }
+                ],
+                hint: "參考課本第16頁「老年期」的生理特徵與飲食質地建議。"
+            },
+            {
+                question: "針對「老年期」的咀嚼與消化需求，課本第16頁右下角建議了哪些好消化且質地柔軟的示範菜單？",
+                answerOptions: [
+                    { text: "牛排、堅果拼盤、鳳梨乾", isCorrect: false, rationale: "這些食物纖維過韌或質地過硬，不適合咀嚼退化的長者。" },
+                    { text: "黑椒鐵板麵、麻辣鴨血、炸地瓜條", isCorrect: false, rationale: "過於油膩與刺激，會加重消化系統變慢的負擔。" },
+                    { text: "蒸蛋、清蒸魚、鮮乳", isCorrect: true, rationale: "蒸蛋與清蒸魚質地極為細嫩、易於咀嚼，且鮮乳與魚肉蛋類能提供豐富蛋白質與鈣質。" },
+                    { text: "糯米大腸、烤花枝、麻糬", isCorrect: false, rationale: "糯米類與花枝黏性高、不易消化且有噎到的風險，不適合長者。" }
+                ],
+                hint: "菜單包含一種蛋料理、一種魚類料理，以及一種白色飲品。"
+            },
+            {
+                question: "除了依照人生各階段補充營養外，養成良好的生活習慣也非常重要。關於「水分補充」，下列哪一項習慣最健康？",
+                answerOptions: [
+                    { text: "多喝白開水，減少含糖飲料的攝取", isCorrect: true, rationale: "白開水是身體新陳代謝最好的溶劑，少喝含糖飲料能避免肥胖與發育受阻。" },
+                    { text: "用果汁、可樂或運動飲料完全取代白開水", isCorrect: false, rationale: "長期以含糖飲料代水會攝入過多精緻糖，增加腎臟負擔與蛀牙機率。" },
+                    { text: "每天只在口渴到頭暈時才勉強喝下一小口濃茶", isCorrect: false, rationale: "當感覺口渴時身體已處於輕微脫水狀態，茶飲中的咖啡因亦具利尿作用。" },
+                    { text: "水分會稀釋體力，因此運動後絕對不能喝任何水", isCorrect: false, rationale: "運動後必須適時補水，否則會導致脫水、中暑甚至熱衰竭。" }
+                ],
+                hint: "課本第17頁圖示中，第一個提到的健康生活習慣。"
+            },
+            {
+                question: "在飲食多樣化的原則下，我們應該培養怎樣的用餐態度，才能讓身體獲得全面的營養？",
+                answerOptions: [
+                    { text: "只挑選自己喜歡吃的肉類，絕對不碰任何綠色蔬菜", isCorrect: false, rationale: "這屬於嚴重的偏食，會導致維生素與纖維質缺乏，引發便秘。" },
+                    { text: "不偏食，多方嘗試並攝取各種不同種類的天然食物", isCorrect: true, rationale: "不偏食才能完整攝取六大類食物的營養，全面支持發育所需。" },
+                    { text: "每天三餐都吃一模一樣的加工火腿，不更換菜單", isCorrect: false, rationale: "長期單一加工飲食會導致嚴重的營養不均衡，且加工品鈉含量過高。" },
+                    { text: "吃飯時只吃白飯，其他菜餚一律不吃", isCorrect: false, rationale: "單純攝取醣類缺乏蛋白質與微量元素，會導致肌肉與骨骼發育不良。" }
+                ],
+                hint: "不挑食、什麼都吃，在健體領域中被稱為什麼？"
+            },
+            {
+                question: "課本建議我們平日應該「適量晒太陽」，晒太陽對我們身體的生長發育有什麼科學上的好處？",
+                answerOptions: [
+                    { text: "晒太陽可以幫身體進行高溫殺菌，消滅所有皮膚細胞", isCorrect: false, rationale: "太陽無法幫人體內部殺菌，過度曝曬反而會造成皮膚曬傷。" },
+                    { text: "晒太陽可以讓衣服自動變色，省下買新衣服的錢", isCorrect: false, rationale: "這不是晒太陽在健康教育上的實質科學功能。" },
+                    { text: "適量晒太陽能幫助身體產生維生素D，進而促進鈣質吸收", isCorrect: true, rationale: "陽光中的紫外線能活化皮膚中的維生素D，這是骨骼吸收鈣質長高的必要輔助因子。" },
+                    { text: "晒太陽可以將體內的骨骼直接融化，重新塑造新造型", isCorrect: false, rationale: "這屬於完全錯誤且誇張的生理認知。" }
+                ],
+                hint: "鈣質需要一位由陽光召喚出來的「維生素好朋友」幫忙，才能被骨骼順利吸收。"
+            },
+            {
+                question: "當我們從嬰幼兒期成長到兒童期，除了「身體長高、體重變重」等外觀改變，還伴隨着什麼關鍵的提升？",
+                answerOptions: [
+                    { text: "生活自理能力的提升，學會更多照顧自己與協助家務的技能", isCorrect: true, rationale: "長大的重要指標包含能力提升，例如剪指甲、洗碗、獨立騎腳踏車等。" },
+                    { text: "哭鬧威脅家人的技巧變得更熟練、更有力量", isCorrect: false, rationale: "成長應伴隨心理成熟與行為自律，而非退化性哭鬧。" },
+                    { text: "變得越來越依賴家人，完全失去自行穿鞋與吃飯的能力", isCorrect: false, rationale: "這是發展倒退的現象，正常成長應朝向逐漸獨立的方向發展。" },
+                    { text: "學會如何一整天躺著不動，完全不幫忙任何家事", isCorrect: false, rationale: "這是不健康的靜態生活型態，與成長所代表的能力提升背道而馳。" }
+                ],
+                hint: "請參考課本第18、19頁「我會做更多事了」的單元核心。"
+            },
+            {
+                question: "下列哪一項行為，屬於國小三年級學生在「能力長大」後，可以自己獨立完成並負責的健康良好生活自理表現？",
+                answerOptions: [
+                    { text: "每天吃完東西後自己刷牙，並學會主動使用牙線清潔牙縫", isCorrect: true, rationale: "這展現了進階的個人口腔衛生保健自理能力，符合課本第19頁示例。" },
+                    { text: "要求爸媽在腳踏車上加裝四個輔助輪才敢在客廳騎車", isCorrect: false, rationale: "三年級多數已發展出良好的平衡感，強烈依賴多重輔助輪非能力提升表現。" },
+                    { text: "修剪指甲時一律用牙齒用力咬碎，直到指甲流血為止", isCorrect: false, rationale: "用嘴咬指甲極易引發細菌感染與甲溝炎，是不正確且不衛生的習慣。" },
+                    { text: "將洗碗的工作全部推給年邁的爺爺，自己去房間看電視", isCorrect: false, rationale: "這缺乏對家庭的責任感與彼此關心的正向互動原則。" }
+                ],
+                hint: "對照課本第19頁「以前」與「現在」的健康行為升級範例。"
+            },
+            {
+                question: "在班上進行「能力大風吹」遊戲時，當喊口令的人大喊：「大風吹！吹會自己綁鞋帶的人！」，如果台下的你也具備這個能力，應該做出什麼動作？",
+                answerOptions: [
+                    { text: "留在原地拍手大笑，並大聲嘲笑不會綁鞋帶的同學", isCorrect: false, rationale: "遊戲應遵守友善互動原則，嘲笑他人會破壞人際關係。" },
+                    { text: "立刻起身與其他同樣會綁鞋帶的同學互相更換座位", isCorrect: false, rationale: "根據課本第20頁規則，具備該能力者應迅速起身換位置。" },
+                    { text: "必須立刻起身更換位置；換越多次表示自己學會的生活技能越多", isCorrect: true, rationale: "大風吹規則中，符合條件者須更換座位，換位置的次數反映了你累積的生活自理能力。" },
+                    { text: "趴在桌上假裝睡著，拒絕參與任何班級的課堂互動", isCorrect: false, rationale: "消極逃避不符合健體課鼓勵團隊分享與互動的學習目標。" }
+                ],
+                hint: "看課本第20頁遊戲規則：其他人也能做到，就要起身換位置。"
+            },
+            {
+                question: "為了把握成長的黃金時期，荳荳訂定了健康成長計畫。在「飲食均衡」方面，下列哪一個計畫內容是正確且積極的？",
+                answerOptions: [
+                    { text: "不偏食，並且每天記得吃早餐、少喝含糖飲料", isCorrect: true, rationale: "吃早餐能提供一天學習的能量，不偏食與控糖是飲食健康的黃金核心。" },
+                    { text: "每天固定喝三杯全糖珍珠奶茶來當作唯一的正餐補給", isCorrect: false, rationale: "珍奶含糖量與反式脂肪過高，會嚴重干擾生長激素分泌。" },
+                    { text: "因為愛吃肉，所以計畫連續一個月完全不吃任何米飯與蔬果", isCorrect: false, rationale: "全肉飲食缺乏碳水化合物與維生素纖維，會損害腸胃與新陳代謝。" },
+                    { text: "為了快速長高，計畫每餐都吃五個油炸雞腿便當", isCorrect: false, rationale: "過量油脂攝取會導致兒童肥胖，肥胖反而可能引發發育提前結束。" }
+                ],
+                hint: "參考課本第21頁「飲食均衡」底下的三個具體行動藍圖。"
+            },
+            {
+                question: "在健康成長計畫的「睡眠充足」維度中，下列哪一項生活習慣調適可以有效提升睡眠品質、幫助長高？",
+                answerOptions: [
+                    { text: "睡前躺在床上連續打電動或看平板電腦兩小時", isCorrect: false, rationale: "3C產品的藍光會抑制褪黑激素分泌，導致失眠與大腦過度興奮。" },
+                    { text: "在固定的時間睡覺，且睡前不使用 3C 產品、改做放鬆運動", isCorrect: true, rationale: "規律作息與睡前放鬆（如輕微伸展）能引導深層睡眠，促進生長激素高效分泌。" },
+                    { text: "每天作業都拖延到凌晨兩點，再一邊吃麻辣燙一邊入睡", isCorrect: false, rationale: "熬夜與睡前重口味飲食會嚴重傷害消化道，徹底破壞睡眠結構。" },
+                    { text: "每逢假日就連續熬夜48小時不睡覺，星期一再連續睡整天", isCorrect: false, rationale: "這種報復性作息會徹底打亂生理時鐘，對發育期的身體造成極大傷害。" }
+                ],
+                hint: "課本第21頁強調「睡前不使用3C產品」與「做放鬆運動」。"
+            },
+            {
+                question: "規律運動能強健體魄。在擬定「規律運動」計畫時，下列哪一種作法最符合課本在「活力存摺」中的實踐建議？",
+                answerOptions: [
+                    { text: "只在體育課時稍微動一下手指，其餘時間完全躺著", isCorrect: false, rationale: "這完全無法達到每天30分鐘或假日固定運動的健康效益。" },
+                    { text: "假日固定運動 1 小時，並可以用鬧鐘設定提醒、確實記錄運動時間", isCorrect: true, rationale: "透過時間記錄與鬧鐘提醒能建立規律習慣，與家人共同運動更能增進感情。" },
+                    { text: "為了衝高記錄，連續二十四小時不間斷瘋狂長跑不休息", isCorrect: false, rationale: "這屬於極端過度運動，會引發肌肉溶解症或嚴重的骨骼關節受創。" },
+                    { text: "把看電視體育頻道當作自己已經實際完成運動的記錄", isCorrect: false, rationale: "觀看節目屬於靜態視覺接觸，身體並未產生實質的肌肉與心肺鍛鍊。" }
+                ],
+                hint: "善用計時工具來協助自己持之以恆，也是課本第21頁推薦的聰明方法。"
+            },
+            {
+                question: "在完成「成長大行動」健康計畫的擬定後，計畫表最下方有「健康宣言」與「見證人」的簽名欄位。請問「見證人」在計畫中扮演什麼角色？",
+                answerOptions: [
+                    { text: "見證人負責在旁邊監督，只要主角沒做到就立刻給予嚴厲的身體懲罰", isCorrect: false, rationale: "防災與健康教育強調的是正向鼓勵與家庭陪伴，非家庭暴力或嚴厲懲罰。" },
+                    { text: "扮演陪伴、提醒與共同支持的角色，協助主角落實生活習慣的改進", isCorrect: true, rationale: "見證人（如爸媽、老師）能透過彼此關心，共同打造健康的家庭支持生活圈。" },
+                    { text: "見證人只需要負責幫忙代簽名字，之後不需要關心對方的執行狀況", isCorrect: false, rationale: "敷衍的外在流於形式，無法達到課本強調「彼此關心生活」的教育宗旨。" },
+                    { text: "見證人是負責在計畫失敗時，代替主角去承受所有生病或長不高的後果", isCorrect: false, rationale: "健康是每個人自己的責任，他人無法代替你的身體承受不健康習慣的後果。" }
+                ],
+                hint: "健康宣言需要家人的共同參與，這是一份充滿愛的陪伴與監督契約。"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // 啟動遊戲
+        function initGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('quizScreen').style.display = 'block';
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('scoreBadge').innerText = `💎 0`;
+            showQuestion();
+        }
+
+        // 渲染題目與選項
+        function showQuestion() {
+            document.getElementById('feedbackPanel').style.display = 'none';
+            document.getElementById('hintBox').style.display = 'none';
+            document.getElementById('hintBox').innerText = '';
+            document.getElementById('hintToggleBtn').style.display = 'block';
+            
+            const currentQ = questionDatabase[currentQuestionIndex];
+            
+            // 更新進度條與HUD
+            document.getElementById('currentQNum').innerText = currentQuestionIndex + 1;
+            const progressPercent = ((currentQuestionIndex) / 30) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+            
+            document.getElementById('questionText').innerText = `【第 ${currentQuestionIndex + 1} 關】${currentQ.question}`;
+            
+            // 渲染選項
+            const optionsBox = document.getElementById('optionsBox');
+            optionsBox.innerHTML = '';
+            
+            currentQ.answerOptions.forEach((option, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = `${idx + 1}. ${option.text}`;
+                btn.onclick = () => checkAnswer(idx, btn);
+                optionsBox.appendChild(btn);
+            });
+        }
+
+        // 顯示魔法提示
+        function toggleHint() {
+            const hintBox = document.getElementById('hintBox');
+            if (hintBox.style.display === 'block') {
+                hintBox.style.display = 'none';
+            } else {
+                hintBox.innerText = `💡 魔法提示：${questionDatabase[currentQuestionIndex].hint}`;
+                hintBox.style.display = 'block';
+            }
+        }
+
+        // 檢查答案邏輯
+        function checkAnswer(selectedIndex, clickedBtn) {
+            const currentQ = questionDatabase[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            allButtons.forEach(btn => btn.disabled = true);
+            document.getElementById('hintToggleBtn').style.display = 'none';
+            document.getElementById('hintBox').style.display = 'none';
+
+            const isCorrect = currentQ.answerOptions[selectedIndex].isCorrect;
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackRationale = document.getElementById('feedbackRationale');
+            const gameWindow = document.getElementById('gameWindow');
+
+            if (isCorrect) {
+                score += 3.33; // 30題換算，極佳配分
+                document.getElementById('scoreBadge').innerText = `💎 ${Math.round(score)}`;
+                clickedBtn.classList.add('correct-ans');
+                feedbackTitle.innerHTML = "哇！你好棒！完全正確！🌟💖🎉";
+                feedbackTitle.style.color = "var(--correct-green)";
+                gameWindow.classList.add('animate-correct');
+                setTimeout(() => gameWindow.classList.remove('animate-correct'), 500);
+            } else {
+                clickedBtn.classList.add('wrong-ans');
+                feedbackTitle.innerHTML = "差一點點，加油！我們再看一次觀念！💪💡😊";
+                feedbackTitle.style.color = "var(--primary-gold)";
+                
+                // 亮出正確答案引導小朋友學習
+                allButtons.forEach((btn, idx) => {
+                    if (currentQ.answerOptions[idx].isCorrect) {
+                        btn.classList.add('correct-ans');
+                    }
+                });
+            }
+
+            feedbackRationale.innerText = currentQ.answerOptions[selectedIndex].rationale;
+            document.getElementById('feedbackPanel').style.display = 'block';
+        }
+
+        // 進入下一題
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionDatabase.length) {
+                showQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        // 結算畫面
+        function endGame() {
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            document.getElementById('progressBar').style.width = `100%`;
+
+            const finalScoreText = document.getElementById('finalScoreText');
+            const starRating = document.getElementById('starRating');
+            const evaluationText = document.getElementById('evaluationText');
+            const finalRoundedScore = Math.round(score > 100 ? 100 : score);
+
+            finalScoreText.innerText = `冒險總得分：${finalRoundedScore} 分！`;
+            triggerConfetti();
+
+            if (finalRoundedScore >= 95) {
+                starRating.innerText = "⭐⭐⭐⭐⭐";
+                evaluationText.innerText = "太完美了！你獲得了『全能健康成長大師』最高稱號！👑✨ 你已經完全了解人生各階段的飲食調整，掌握了睡眠、規律運動、不偏食的健康密碼，是班上最棒的健康模範生！💖";
+            } else if (finalRoundedScore >= 80) {
+                starRating.innerText = "⭐⭐⭐⭐";
+                evaluationText.innerText = "非常出色！你獲得了『成長發育智多星』徽章！🌟 你非常清楚如何協助家人和自己規劃均衡飲食菜單，只要在日常生活中認真貫徹計畫，你一定會健康茁壯長大！👍";
+            } else if (finalRoundedScore >= 60) {
+                starRating.innerText = "⭐⭐⭐";
+                evaluationText.innerText = "恭喜過關！你獲得了『健康生活見習生』稱號！💪 你已經明白少喝含糖飲料、多喝水以及六大類均衡飲食的概念。建議可以再次挑戰，讓自己的成長計畫防護網更加完美喔！😊";
+            } else {
+                starRating.innerText = "⭐";
+                evaluationText.innerText = "這次大冒險的題目細節很多，答錯了也不要灰心！😊 每一題選項後面的解析都是幫你身體長高的營養劑，重新再玩一次，相信下一次你絕對能突破自我、拿到滿分！💪🔥";
+            }
+        }
+
+        // 紙屑噴發特效
+        function triggerConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            const colors = ['#D4AF37', '#FFFFFF', '#FFD700', '#FF8C00', '#4169E1', '#32CD32'];
+            
+            for (let i = 0; i < 90; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 1.5}s`;
+                confetti.style.animationDuration = `${2 + Math.random() * 2}s`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(confetti);
+            }
+        }
+
+        function resetGame() {
+            initGame();
+        }
+
+        // 啟動
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+        });
+    </script>
+</body>
+</html>
